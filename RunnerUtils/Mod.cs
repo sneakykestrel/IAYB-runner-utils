@@ -70,7 +70,6 @@ namespace RunnerUtils
             Logger.LogInfo("Hiiiiiiiiiiii :3");
             Harmony harmony = new Harmony(pluginGuid);
             harmony.PatchAll();
-            Harmony.UnpatchID("kestrel.iamyourbeast.snowmanpercent");
         }
 
         public void OnEnable() {
