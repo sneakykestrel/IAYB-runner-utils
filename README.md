@@ -12,32 +12,16 @@ This mod adds various features intended to make routing speedruns easier. These 
 
 The default binds are:
 
-Toggle all triggers' visibility: `Comma`
-
-Toggle OOB boxes' visibility: `Period`
-
-Toggle timer start triggers' visibility: `Slash`
-
-Toggle spawners' visibility: `M`
-
-
-
-Toggle log visibility: `K`
-
-Clear log: `J`
-
-
-Toggle infinite ammo: `L`
-
-Toggle throw cam: `Semicolon`
-
-
-
-Save location: `Left bracket`
-
-Load location: `Right bracket`
-
-
+- Toggle all triggers' visibility: `Comma`
+- Toggle OOB boxes' visibility: `Period`
+- Toggle timer start triggers' visibility: `Slash`
+- Toggle spawners' visibility: `M`
+- Toggle log visibility: `K`
+- Clear log: `J`
+- Toggle infinite ammo: `L`
+- Toggle throw cam: `Semicolon`
+- Save location: `Left bracket`
+- Load location: `Right bracket`
 
 These can be modified in the `BepInEx/config/kestrel.iamyourbeast.runnerutils.cfg` file, which also contains a few other options.
 
