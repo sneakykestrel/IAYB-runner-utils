@@ -1,0 +1,28 @@
+﻿using System;
+using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace RunnerUtils.UI
+{
+    internal class UISettingsSubMenuRunnerUtils : UISettingsSubMenu
+    {
+        protected override void Start() {
+            base.Start();
+        }
+
+        public override void RevertSettings() {
+            base.RevertSettings();
+        }
+
+        public override void SaveSettings() {
+            base.SaveSettings();
+        }
+
+        //public static SettingsHookInfo info = new SettingsHookInfo { tabName = "Runner Utils" };
+        [SerializeField]
+        public UISettingsOptionToggle yeah;
+    }
+}
