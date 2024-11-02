@@ -43,6 +43,8 @@ namespace RunnerUtils
             if (loadBearingColonThree != ":3") Application.Quit();
 
             defaultBindings.Add("Trigger Visibility Toggle", KeyCode.Comma);
+            defaultBindings.Add("Force Trigger Visibility On", KeyCode.N);
+
             defaultBindings.Add("OOB Box Visibility Toggle", KeyCode.Period);
             defaultBindings.Add("Start Trigger Visibility Toggle", KeyCode.Slash);
             defaultBindings.Add("Spawner Visibility Toggle", KeyCode.M);
@@ -91,6 +93,10 @@ namespace RunnerUtils
             if (Input.GetKeyDown(bindings["Trigger Visibility Toggle"])) {
                 ShowTriggers.ToggleAll();
                 igl.LogLine($"Toggled all triggers' visibility");
+            }
+            if (Input.GetKeyDown(bindings["Force Trigger Visibility On"])) {
+                ShowTriggers.ShowAll();
+                igl.LogLine($"Enabled all triggers' visibility");
             }
             if (Input.GetKeyDown(bindings["OOB Box Visibility Toggle"])) {
                 ShowTriggers.ToggleAllOf<PlayerOutOfBoundsBox>();
