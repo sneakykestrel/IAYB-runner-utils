@@ -118,7 +118,7 @@ namespace RunnerUtils
                     ThrowCam.ToggleCam();
                     igl.LogLine($"Toggled throw cam");
                 } else {
-                    igl.LogLine($"Unable to toggle throw cam ~ no thrown weapon available");
+                    igl.LogLine($"Unable to switch to throw cam ~ no thrown weapons are in the air");
                 }
             }
 

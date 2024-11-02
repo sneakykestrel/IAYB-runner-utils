@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Enemy;
 using System.IO;
 using UnityEngine.UI;
+using AimAssist;
 
 namespace RunnerUtils.Components
 {
@@ -22,12 +23,12 @@ namespace RunnerUtils.Components
         private static Camera m_cam;
         private static Camera m_oldCam;
         private static GameObject m_obj;
-        private static Vector3 m_motion;
+        private static Vector3 m_velocity;
 
         public static bool cameraAvailable;
 
-        public static void UpdatePos(Transform anchor) {
-            m_obj.transform.position = (anchor.position-(m_motion*Mod.throwCam_rangeScalar.Value));
+        public static void UpdatePos(Transform anchor, Vector3 velocity) {
+            m_obj.transform.position = (anchor.position-(velocity*Mod.throwCam_rangeScalar.Value));
             if (Mod.throwCam_unlockCamera.Value) {
                 m_obj.transform.rotation = GameManager.instance.cameraManager.GetArmCamera().transform.rotation;
             } else {
@@ -40,6 +41,7 @@ namespace RunnerUtils.Components
             GameManager.instance.player.GetHUD().GetReticle().gameObject.SetActive(true);
             m_cam.enabled = false;
             m_oldCam.enabled = true;
+            GameObject.Destroy(m_obj);
         }
 
         public static void ToggleCam() {
@@ -49,31 +51,34 @@ namespace RunnerUtils.Components
             reticle.SetActive(!reticle.activeInHierarchy);
         }
 
-        [HarmonyPatch(typeof(PlayerWeaponToss))]
-        public static class InitCam
-        {
-            [HarmonyPatch("Start")]
-            [HarmonyPostfix]
-            public static void StartPostfix(ref Transform ___tiltAnchor) {
-                m_oldCam = GameManager.instance.cameraManager.GetManagersCamera();
-                m_obj = new GameObject();
+        private static void SetupCam() {
+            m_oldCam = GameManager.instance.cameraManager.GetManagersCamera();
+            m_obj = new GameObject();
 
-                m_cam = m_obj.AddComponent<Camera>();
-                m_cam.GetUniversalAdditionalCameraData().cameraStack.Add(m_oldCam.GetUniversalAdditionalCameraData().cameraStack[1]);
-                cameraAvailable = true;
-                m_cam.enabled = false;
-                if (Mod.throwCam_autoSwitch.Value) {
-                    ToggleCam();
-                }
+            m_cam = m_obj.AddComponent<Camera>();
+            m_cam.GetUniversalAdditionalCameraData().cameraStack.Add(m_oldCam.GetUniversalAdditionalCameraData().cameraStack[1]);
+            m_cam.enabled = false;
+
+            cameraAvailable = true;
+            if (Mod.throwCam_autoSwitch.Value) {
+                ToggleCam();
+            }
+        }
+
+        [HarmonyPatch(typeof(PlayerWeaponToss))]
+        public static class WeaponToss {
+
+            [HarmonyPatch("Initialize", new Type[] { typeof(WeaponPickup) , typeof(AimTarget)})]
+            [HarmonyPostfix]
+            public static void InitPostfix(ref TossedEquipment ___tossedEquipment) {
+                SetupCam();
             }
 
             [HarmonyPatch("Update")]
             [HarmonyPostfix]
-            public static void UpdatePostfix(ref bool ___hitSurface, ref Transform ___tiltAnchor) {
-                if (___hitSurface) {
-                    return;
-                }
-                UpdatePos(___tiltAnchor);
+            public static void UpdatePostfix(ref bool ___hitSurface, ref Transform ___tiltAnchor, ref Transform ___spinAnchor) {
+                if (___hitSurface) return;
+                UpdatePos(___tiltAnchor, m_velocity);
             }
 
             [HarmonyPatch("OnCollisionEnter")]
@@ -87,9 +92,32 @@ namespace RunnerUtils.Components
             public static void FixedUpdatePostfix(float ___speed, float ___gravity, Transform ___tiltAnchor) {
                 Vector3 a = ___tiltAnchor.parent.transform.forward * ___speed;
                 a += Vector3.down * ___gravity;
-                m_motion = a;
+                m_velocity = a;
             }
         }
 
+
+        [HarmonyPatch(typeof(TossedEquipment))]
+        public static class EquipmentToss
+        {
+            [HarmonyPatch("Initialize")]
+            [HarmonyPostfix]
+            public static void InitPostfix() {
+                SetupCam();
+            }
+
+            [HarmonyPatch("Update")]
+            [HarmonyPostfix]
+            public static void UpdatePostfix(ref bool ___collided, ref Rigidbody ___rb) {
+                if (___collided) return;
+                UpdatePos(___rb.gameObject.transform, ___rb.velocity);
+            }
+
+            [HarmonyPatch("OnCollisionEnter")]
+            [HarmonyPostfix]
+            public static void CollisionEnterPostfix() {
+                Reset();
+            }
+        }
     }
 }
