@@ -1,4 +1,5 @@
 ﻿using Enemy;
+using Equipment;
 using HarmonyLib;
 using Microsoft.Win32;
 using System;
@@ -19,6 +20,7 @@ namespace RunnerUtils
         static Texture2D tex = new Texture2D(1, 1);
         static Material mat = new Material(Shader.Find("Sprites/Default"));//Resources.Load<Material>("materials/Trigger");
         static Color spawnerColor = Color.magenta;
+        static Color placedEquipmentColor = new Color(1, 0, 0.5f, 0.5f);
         static Dictionary<Type, Color> triggerColors = new Dictionary<Type, Color>();
         static Dictionary<string, Color> extraColors = new Dictionary<string, Color>();
         static List<GameObject> registry = new List<GameObject>();
@@ -132,14 +134,14 @@ namespace RunnerUtils
             }
         }
 
-        private static void RegisterObj(EventTriggerBoxPlayer obj){
+        private static void MakeVisible(GameObject obj, Color boxColor) {
             BoxCollider collider;
-            if (!obj.gameObject.TryGetComponent<BoxCollider>(out collider)) return;
+            if (!obj.TryGetComponent<BoxCollider>(out collider)) return;
 
-            MeshRenderer renderer = obj.gameObject.AddComponent<MeshRenderer>();
+            MeshRenderer renderer = obj.AddComponent<MeshRenderer>();
             MeshFilter filter;
-            if (!obj.gameObject.TryGetComponent<MeshFilter>(out filter)) {
-                filter = obj.gameObject.AddComponent<MeshFilter>();
+            if (!obj.TryGetComponent<MeshFilter>(out filter)) {
+                filter = obj.AddComponent<MeshFilter>();
             }
 
             GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -149,14 +151,20 @@ namespace RunnerUtils
 
             Vector3[] verts = scaled.vertices;
             for (int i = 0; i < verts.Length; ++i) {
-                verts[i] = Vector3.Scale(verts[i], collider.size)+collider.center;
+                verts[i] = Vector3.Scale(verts[i], collider.size) + collider.center;
             }
             scaled.vertices = verts;
             scaled.RecalculateBounds();
             filter.mesh = scaled;
 
-            renderer.enabled = true;
             renderer.material = mat;
+
+            renderer.enabled = false; //disable by default
+            renderer.material.color = boxColor;
+        }
+
+        private static void RegisterObj(EventTriggerBoxPlayer obj){
+            
 
             Color col = new Color(0, 1, 0, 0.25f);
 
@@ -200,8 +208,7 @@ namespace RunnerUtils
                 if (obj.gameObject.GetComponent(kv.Key)) col = kv.Value;
             }
 
-            renderer.enabled = false; //disable by default
-            renderer.material.color = col;
+            MakeVisible(obj.gameObject, col);
             registry.Add(obj.gameObject);
         }
 
@@ -222,6 +229,16 @@ namespace RunnerUtils
             [HarmonyPostfix]
             public static void SpawnPostfix(EnemySpawner __instance, ref bool __state) {
                 __instance.gameObject.SetActive(true);
+            }
+        }
+
+        [HarmonyPatch(typeof(PlacedEquipment), nameof(PlacedEquipment.Initialize))]
+        public class ShowEquipment
+        {
+            [HarmonyPostfix]
+            public static void PlacedPostfix(ref PlacedEquipment __instance) {
+                MakeVisible(__instance.gameObject, placedEquipmentColor);
+                registry.Add(__instance.gameObject);
             }
         }
     }
