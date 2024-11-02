@@ -15,9 +15,10 @@ namespace RunnerUtils
 
         private int m_bufferLen = 15;
         private bool m_shouldBeVisible = true;
-        public int m_fadeLen = 4;
-        public Vector2 m_anchoredPos = new Vector2(-800, 535);
-        public Vector2 m_sizeDelta = new Vector2(750, 250);
+        public int fadeLen = 4;
+        public Vector2 anchoredPos = new Vector2(-800, 535);
+        public Vector2 sizeDelta = new Vector2(750, 250);
+        public TextAlignmentOptions textAlignment = TextAlignmentOptions.TopLeft;
         private TextMeshProUGUI m_textComponent;
         private GameObject m_gameObj;
         string m_name;
@@ -36,7 +37,7 @@ namespace RunnerUtils
                             int fadeLength = 4) {
             m_name = name;
             m_bufferLen = bufferLength;
-            m_fadeLen = fadeLength;
+            fadeLen = fadeLength;
             buffer = new CircularArray<string>(m_bufferLen);
         }
 
@@ -94,7 +95,7 @@ namespace RunnerUtils
             if (m_textComponent == null) return;
             m_textComponent.text = $"{m_name}\n";
             buffer.ForEach((string val, int i) => {
-                m_textComponent.text += (i<m_bufferLen-m_fadeLen?val:$"<alpha=#{((255*(m_bufferLen-i)/m_fadeLen)):X2}>"+val); //dont worry about it
+                m_textComponent.text += (i<m_bufferLen-fadeLen?val:$"<alpha=#{((255*(m_bufferLen-i)/fadeLen)):X2}>"+val); //dont worry about it
             });
         }
 
@@ -115,14 +116,15 @@ namespace RunnerUtils
             var transform = m_gameObj.GetComponent<RectTransform>();
             if (!transform) transform = m_gameObj.AddComponent<RectTransform>();
 
-            transform.anchoredPosition = m_anchoredPos;
-            transform.sizeDelta = m_sizeDelta;
+            transform.anchoredPosition = anchoredPos;
+            transform.sizeDelta = sizeDelta;
 
             var tmp = gps.transform.parent.GetComponentInChildren<TextMeshProUGUI>();
 
             m_textComponent = m_gameObj.GetComponent<TextMeshProUGUI>();
             if (!m_textComponent) m_textComponent = m_gameObj.AddComponent<TextMeshProUGUI>();
 
+            m_textComponent.alignment = textAlignment;
             m_textComponent.font = tmp.font;
             m_textComponent.fontSize = 24;
             m_textComponent.enabled = m_shouldBeVisible;

@@ -7,12 +7,16 @@ This mod adds various features intended to make routing speedruns easier. These 
 - Save/Load keybinds for player location and rotation
 - Snowman% time popup
 - A camera that follows thrown projectiles
+- Time stop
+- Auto jump
 
 ## Usage
 
 The default binds are:
 
 - Toggle all triggers' visibility: `Comma`
+- Force enable all triggers' visibility: `O`
+- Force disable all triggers' visibility: `I`
 - Toggle OOB boxes' visibility: `Period`
 - Toggle timer start triggers' visibility: `Slash`
 - Toggle spawners' visibility: `M`
@@ -22,6 +26,8 @@ The default binds are:
 - Toggle throw cam: `Semicolon`
 - Save location: `Left bracket`
 - Load location: `Right bracket`
+- Toggle timestop: `Right Shift`
+- Toggle auto jump: `P`
 
 These can be modified in the `BepInEx/config/kestrel.iamyourbeast.runnerutils.cfg` file, which also contains a few other options.
 

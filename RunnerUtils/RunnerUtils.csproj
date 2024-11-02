@@ -93,9 +93,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\AutoJump.cs" />
+    <Compile Include="Components\FairPlay.cs" />
     <Compile Include="Components\InfiniteAmmo.cs" />
     <Compile Include="Components\InGameLog.cs" />
     <Compile Include="Components\LocationSave.cs" />
+    <Compile Include="Components\PauseTime.cs" />
     <Compile Include="Components\SnowmanPercent.cs" />
     <Compile Include="Components\ThrowCam.cs" />
     <Compile Include="Mod.cs" />

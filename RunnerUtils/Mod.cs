@@ -24,9 +24,10 @@ namespace RunnerUtils
     {
         const string pluginGuid = "kestrel.iamyourbeast.runnerutils";
         const string pluginName = "Runner Utils";
-        const string pluginVersion = "1.1.0";
+        const string pluginVersion = "1.2.0";
 
         static InGameLog igl = new InGameLog($"{pluginName}~Ingame Log (v{pluginVersion})");
+        static bool shouldResetScale;
 
         static Dictionary<string, KeyCode> defaultBindings = new Dictionary<string, KeyCode>();
         static Dictionary<string, KeyCode> bindings = new Dictionary<string, KeyCode>();
@@ -43,21 +44,19 @@ namespace RunnerUtils
             if (loadBearingColonThree != ":3") Application.Quit();
 
             defaultBindings.Add("Trigger Visibility Toggle", KeyCode.Comma);
-            defaultBindings.Add("Force Trigger Visibility On", KeyCode.N);
-
+            defaultBindings.Add("Force Trigger Visibility On", KeyCode.O);
+            defaultBindings.Add("Force Trigger Visibility Off", KeyCode.I);
             defaultBindings.Add("OOB Box Visibility Toggle", KeyCode.Period);
             defaultBindings.Add("Start Trigger Visibility Toggle", KeyCode.Slash);
             defaultBindings.Add("Spawner Visibility Toggle", KeyCode.M);
-
             defaultBindings.Add("Log Visibility Toggle", KeyCode.K);
             defaultBindings.Add("Clear Log", KeyCode.J);
-
             defaultBindings.Add("Toggle Infinite Ammo", KeyCode.L);
-
             defaultBindings.Add("Toggle Throw Cam", KeyCode.Semicolon);
-
             defaultBindings.Add("Save Location", KeyCode.LeftBracket);
             defaultBindings.Add("Load Location", KeyCode.RightBracket);
+            defaultBindings.Add("Toggle timestop", KeyCode.RightShift);
+            defaultBindings.Add("Toggle auto jump", KeyCode.P);
 
             throwCam_unlockCamera = Config.Bind("Throw Cam", "Unlock Camera", false, "Unlock the camera when in throw cam");
             throwCam_rangeScalar = Config.Bind("Throw Cam", "Camera Range", 0.2f, "Follow range of the throw cam");
@@ -93,22 +92,32 @@ namespace RunnerUtils
             if (Input.GetKeyDown(bindings["Trigger Visibility Toggle"])) {
                 ShowTriggers.ToggleAll();
                 igl.LogLine($"Toggled all triggers' visibility");
+                FairPlay.triggersModified = true;
             }
             if (Input.GetKeyDown(bindings["Force Trigger Visibility On"])) {
                 ShowTriggers.ShowAll();
                 igl.LogLine($"Enabled all triggers' visibility");
+                FairPlay.triggersModified = true;
+            }
+            if (Input.GetKeyDown(bindings["Force Trigger Visibility Off"])) {
+                ShowTriggers.HideAll();
+                igl.LogLine($"Disabled all triggers' visibility");
+                FairPlay.triggersModified = false;
             }
             if (Input.GetKeyDown(bindings["OOB Box Visibility Toggle"])) {
                 ShowTriggers.ToggleAllOf<PlayerOutOfBoundsBox>();
                 igl.LogLine($"Toggled OOB boxes' visibility");
+                FairPlay.triggersModified = true;
             }
             if (Input.GetKeyDown(bindings["Start Trigger Visibility Toggle"])) {
                 ShowTriggers.ToggleAllOf<PlayerTimerStartBox>();
                 igl.LogLine($"Toggled start triggers' visibility");
+                FairPlay.triggersModified = true;
             }
             if (Input.GetKeyDown(bindings["Spawner Visibility Toggle"])) {
                 ShowTriggers.ToggleAllOf<EnemySpawner>();
                 igl.LogLine($"Toggled spawners' visibility");
+                FairPlay.triggersModified = true;
             }
 
 
@@ -116,6 +125,7 @@ namespace RunnerUtils
                 if (!GameManager.instance.player.GetHUD()) return;
                 InfiniteAmmo.Toggle();
                 igl.LogLine($"Toggled infinite ammo");
+                FairPlay.infiniteAmmo = InfiniteAmmo.Enabled;
             }
 
 
@@ -131,15 +141,36 @@ namespace RunnerUtils
             if (Input.GetKeyDown(bindings["Save Location"])) {
                 LocationSave.SaveLocation();
                 igl.LogLine($"Saved location {(saveLocation_verbose.Value ? LocationSave.StringLoc : "")}");
+                FairPlay.locationSaved = true;
             }
             if (Input.GetKeyDown(bindings["Load Location"])) {
                 LocationSave.RestoreLocation();
                 igl.LogLine($"Loaded previous location {(saveLocation_verbose.Value ? LocationSave.StringLoc : "")}");
             }
+
+            if (GameManager.instance.timeManager != null && shouldResetScale) {
+                PauseTime.Reset();
+                shouldResetScale = false;
+            }
+            if (Input.GetKeyDown(bindings["Toggle timestop"])) {
+                PauseTime.Toggle();
+                igl.LogLine($"Toggled timestop");
+                FairPlay.timePaused = PauseTime.Enabled;
+            }
+
+
+            if (Input.GetKeyDown(bindings["Toggle auto jump"])) {
+                AutoJump.Toggle();
+                igl.LogLine($"Toggled auto jump");
+                FairPlay.autoJump = AutoJump.Enabled;
+            }
+
+            FairPlay.Update();
         }
 
         public void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
             ShowTriggers.RegisterAll();
+            shouldResetScale = true;
         }
 
         [HarmonyPatch(typeof(Player))]
@@ -149,7 +180,11 @@ namespace RunnerUtils
             [HarmonyPostfix]
             public static void PlayerInitPostfix() {
                 igl.Setup();
-                if (LocationSave.Location == Vector3.zero) LocationSave.SaveLocation();
+                FairPlay.Init();
+                if (LocationSave.Location == Vector3.zero) {
+                    LocationSave.SaveLocation();
+                    FairPlay.locationSaved = false;
+                }
             }
         }
 

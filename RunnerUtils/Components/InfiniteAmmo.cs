@@ -1,5 +1,6 @@
 ﻿using AimAssist;
 using HarmonyLib;
+using RunnerUtils.Components;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
@@ -14,21 +15,23 @@ namespace RunnerUtils
 {
     public class InfiniteAmmo
     {
-        public static bool enabled;
+        private static bool m_enabled;
+
+        public static bool Enabled { get { return m_enabled; } }
 
         public static void Enable() {
-            enabled = true;
+            m_enabled = true;
             GameManager.instance.player.GetHUD().GetAmmoIndicator().LoadInSlots(GameManager.instance.player.GetArmScript().GetEquippedWeapon());
         }
 
         public static void Disable() {
-            enabled = false;
+            m_enabled = false;
             GameManager.instance.player.GetHUD().GetAmmoIndicator().LoadInSlots(GameManager.instance.player.GetArmScript().GetEquippedWeapon());
 
         }
 
         public static void Toggle() {
-            enabled = !enabled;
+            m_enabled = !m_enabled;
             try {
                 GameManager.instance.player.GetHUD().GetAmmoIndicator().LoadInSlots(GameManager.instance.player.GetArmScript().GetEquippedWeapon());
             } catch { }
@@ -47,7 +50,7 @@ namespace RunnerUtils
             [HarmonyPostfix]
             public static void Postfix(ref List<HUDAmmoIndicatorSlot> ___spawnedSlots) {
                 for (int i = 0; i < ___spawnedSlots.Count; ++i) {
-                    if (enabled) {
+                    if (m_enabled) {
                         ColorAmmoSlots(ref ___spawnedSlots, Color.red);
                     } else {
                         ColorAmmoSlots(ref ___spawnedSlots, Color.white);
@@ -62,7 +65,7 @@ namespace RunnerUtils
         {
             [HarmonyPrefix]
             public static bool Prefix(ref bool __result) {
-                if (enabled) {
+                if (m_enabled) {
                     __result = true;
                     return false;
                 } else {
