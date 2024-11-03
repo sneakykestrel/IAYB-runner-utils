@@ -10,16 +10,21 @@ namespace RunnerUtils.Components
 {
     public class LocationSave
     {
-        static Vector3 savedLocation;
-        static Vector3 savedRotation;
+        static Vector3 savedLocation = Vector3.zero;
+        static Vector3 savedRotation = Vector3.zero;
 
         public static Vector3 Location { get { return savedLocation; } }
         public static Vector3 Rotation { get { return savedRotation; } }
-        public static string StringLoc { get { return $"l{Location}@r{Rotation}"; } }
+        public static string StringLoc { get { return $"<color=red>l{Location}<color=white>@<color=blue>r{Rotation}</color>"; } }
 
         public static void SaveLocation() {
             savedLocation = GameManager.instance.player.GetPosition();
             savedRotation = GameManager.instance.player.GetLookScript().GetBaseRotation();
+        }
+
+        public static void ClearLocation() {
+            savedLocation = Vector3.zero;
+            savedRotation = Vector3.zero;
         }
 
         public static void RestoreLocation() {

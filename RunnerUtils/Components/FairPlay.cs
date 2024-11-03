@@ -25,7 +25,7 @@ namespace RunnerUtils.Components
             igl.Clear();
             if (triggersModified) igl.LogLine("Triggers");
             if (infiniteAmmo) igl.LogLine("Ammo");
-            if (locationSaved) igl.LogLine("Location Saved");
+            if (locationSaved) igl.LogLine($"Location Saved{(Mod.saveLocation_verbose.Value?$" ({LocationSave.StringLoc})":"")}");
             if (timePaused) igl.LogLine("Time Paused");
             if (autoJump) igl.LogLine("Auto Jump");
             igl.FlushBuffer();

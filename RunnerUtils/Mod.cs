@@ -24,7 +24,7 @@ namespace RunnerUtils
     {
         const string pluginGuid = "kestrel.iamyourbeast.runnerutils";
         const string pluginName = "Runner Utils";
-        const string pluginVersion = "1.2.0";
+        const string pluginVersion = "1.2.3";
 
         static InGameLog igl = new InGameLog($"{pluginName}~Ingame Log (v{pluginVersion})");
         static bool shouldResetScale;
@@ -38,6 +38,7 @@ namespace RunnerUtils
 
         public static ConfigEntry<bool> saveLocation_verbose;
 
+        static string lastSceneName = "";
         static string loadBearingColonThree = ":3";
 
         public void Awake() {
@@ -144,8 +145,17 @@ namespace RunnerUtils
                 FairPlay.locationSaved = true;
             }
             if (Input.GetKeyDown(bindings["Load Location"])) {
-                LocationSave.RestoreLocation();
-                igl.LogLine($"Loaded previous location {(saveLocation_verbose.Value ? LocationSave.StringLoc : "")}");
+                if (LocationSave.Location != Vector3.zero) {
+                    LocationSave.RestoreLocation();
+                    igl.LogLine($"Loaded previous location {(saveLocation_verbose.Value ? LocationSave.StringLoc : "")}");
+                } else {
+                    igl.LogLine("No location saved!");
+                }
+            }
+            if (Input.GetKeyDown(bindings["Load Location"]) && Input.GetKeyDown(bindings["Save Location"])) {
+                LocationSave.ClearLocation();
+                igl.LogLine($"Cleared saved location");
+                FairPlay.locationSaved = false;
             }
 
             if (GameManager.instance.timeManager != null && shouldResetScale) {
@@ -170,6 +180,7 @@ namespace RunnerUtils
 
         public void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
             ShowTriggers.RegisterAll();
+            lastSceneName = scene.name;
             shouldResetScale = true;
         }
 
@@ -181,10 +192,6 @@ namespace RunnerUtils
             public static void PlayerInitPostfix() {
                 igl.Setup();
                 FairPlay.Init();
-                if (LocationSave.Location == Vector3.zero) {
-                    LocationSave.SaveLocation();
-                    FairPlay.locationSaved = false;
-                }
             }
         }
 
