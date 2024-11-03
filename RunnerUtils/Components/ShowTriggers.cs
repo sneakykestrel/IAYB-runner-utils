@@ -178,9 +178,16 @@ namespace RunnerUtils
 
 
                 if (methodName == "Spawn" || methodName == "SpawnEnemy") {
-                    var target = ((MonoBehaviour)onTrigger.GetPersistentTarget(i));
+                    var target = (onTrigger.GetPersistentTarget(i));
                     if (!target) continue;
-                    var targetObj = target.gameObject;
+
+                    GameObject targetObj;
+                    try {
+                        targetObj = ((MonoBehaviour)target).gameObject;
+                    } catch {
+                        //this exists because ONE trigger on permafrost is wired up wrong
+                        continue;
+                    }
 
                     var spawners = new List<EnemySpawner>(targetObj.GetComponentsInChildren<EnemySpawner>(true));
 
