@@ -1,24 +1,20 @@
 ﻿using Enemy;
 using Equipment;
 using HarmonyLib;
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Rendering;
 
 namespace RunnerUtils
 {
     public class ShowTriggers
     {
         static Texture2D tex = new Texture2D(1, 1);
-        static Material mat = new Material(Shader.Find("Sprites/Default"));//Resources.Load<Material>("materials/Trigger");
+        static Material mat = new Material(Shader.Find("Sprites/Default"));
         static Color spawnerColor = Color.magenta;
         static Color placedEquipmentColor = new Color(1, 0, 0.5f, 0.5f);
         static Dictionary<Type, Color> triggerColors = new Dictionary<Type, Color>();

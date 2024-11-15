@@ -7,15 +7,8 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Enemy;
-using System.IO;
-using UnityEngine.UI;
-using CurvedUI;
 using RunnerUtils.Components;
-using BepInEx.Unity.Mono.Bootstrap;
 
 namespace RunnerUtils
 {
@@ -24,13 +17,13 @@ namespace RunnerUtils
     {
         const string pluginGuid = "kestrel.iamyourbeast.runnerutils";
         const string pluginName = "Runner Utils";
-        const string pluginVersion = "1.2.3";
+        const string pluginVersion = "1.2.5";
 
         static InGameLog igl = new InGameLog($"{pluginName}~Ingame Log (v{pluginVersion})");
         static bool shouldResetScale;
 
         static Dictionary<string, KeyCode> defaultBindings = new Dictionary<string, KeyCode>();
-        static Dictionary<string, KeyCode> bindings = new Dictionary<string, KeyCode>();
+        static Dictionary<string, ConfigEntry<KeyCode>> bindings = new Dictionary<string, ConfigEntry<KeyCode>>();
 
         public static ConfigEntry<float> throwCam_rangeScalar;
         public static ConfigEntry<bool> throwCam_unlockCamera;
@@ -60,18 +53,17 @@ namespace RunnerUtils
             defaultBindings.Add("Toggle auto jump", KeyCode.P);
 
             throwCam_unlockCamera = Config.Bind("Throw Cam", "Unlock Camera", false, "Unlock the camera when in throw cam");
-            throwCam_rangeScalar = Config.Bind("Throw Cam", "Camera Range", 0.2f, "Follow range of the throw cam");
+            throwCam_rangeScalar = Config.Bind("Throw Cam", "Camera Range", 0.2f, new ConfigDescription("Follow range of the throw cam", new AcceptableValueRange<float>(0.01f, 3.0f)));
             throwCam_autoSwitch = Config.Bind("Throw Cam", "Auto Switch", false, "Automatically switch to throw cam when a projectile is thrown");
 
             saveLocation_verbose = Config.Bind("Location Save", "Verbose", false, "Log the exact location and rotation when a save or load is performed");
 
             foreach (var binding in defaultBindings) {
-                bindings.Add(binding.Key, (Config.Bind("Bindings", binding.Key, binding.Value, new ConfigDescription("", new AcceptableValueRange<KeyCode>(KeyCode.None, KeyCode.Joystick8Button19)))).Value); //surely this wont cause issues later
+                bindings.Add(binding.Key, Config.Bind("Bindings", binding.Key, binding.Value, new ConfigDescription("", new AcceptableValueRange<KeyCode>(KeyCode.None, KeyCode.Joystick8Button19)))); //surely this wont cause issues later
             }
 
             Logger.LogInfo("Hiiiiiiiiiiii :3");
-            Harmony harmony = new Harmony(pluginGuid);
-            harmony.PatchAll();
+            new Harmony(pluginGuid).PatchAll();
         }
 
         public void OnEnable() {
@@ -80,49 +72,49 @@ namespace RunnerUtils
 
         public void Update() {
             //mm if statements
-            if (Input.GetKeyDown(bindings["Log Visibility Toggle"])) {
+            if (Input.GetKeyDown(bindings["Log Visibility Toggle"].Value)) {
                 igl.ToggleVisibility();
                 igl.LogLine($"Toggled log visibility");
             }
-            if (Input.GetKeyDown(bindings["Clear Log"])) {
+            if (Input.GetKeyDown(bindings["Clear Log"].Value)) {
                 igl.Clear();
                 igl.LogLine($"Cleared Log");
             }
 
 
-            if (Input.GetKeyDown(bindings["Trigger Visibility Toggle"])) {
+            if (Input.GetKeyDown(bindings["Trigger Visibility Toggle"].Value)) {
                 ShowTriggers.ToggleAll();
                 igl.LogLine($"Toggled all triggers' visibility");
                 FairPlay.triggersModified = true;
             }
-            if (Input.GetKeyDown(bindings["Force Trigger Visibility On"])) {
+            if (Input.GetKeyDown(bindings["Force Trigger Visibility On"].Value)) {
                 ShowTriggers.ShowAll();
                 igl.LogLine($"Enabled all triggers' visibility");
                 FairPlay.triggersModified = true;
             }
-            if (Input.GetKeyDown(bindings["Force Trigger Visibility Off"])) {
+            if (Input.GetKeyDown(bindings["Force Trigger Visibility Off"].Value)) {
                 ShowTriggers.HideAll();
                 igl.LogLine($"Disabled all triggers' visibility");
                 FairPlay.triggersModified = false;
             }
-            if (Input.GetKeyDown(bindings["OOB Box Visibility Toggle"])) {
+            if (Input.GetKeyDown(bindings["OOB Box Visibility Toggle"].Value)) {
                 ShowTriggers.ToggleAllOf<PlayerOutOfBoundsBox>();
                 igl.LogLine($"Toggled OOB boxes' visibility");
                 FairPlay.triggersModified = true;
             }
-            if (Input.GetKeyDown(bindings["Start Trigger Visibility Toggle"])) {
+            if (Input.GetKeyDown(bindings["Start Trigger Visibility Toggle"].Value)) {
                 ShowTriggers.ToggleAllOf<PlayerTimerStartBox>();
                 igl.LogLine($"Toggled start triggers' visibility");
                 FairPlay.triggersModified = true;
             }
-            if (Input.GetKeyDown(bindings["Spawner Visibility Toggle"])) {
+            if (Input.GetKeyDown(bindings["Spawner Visibility Toggle"].Value)) {
                 ShowTriggers.ToggleAllOf<EnemySpawner>();
                 igl.LogLine($"Toggled spawners' visibility");
                 FairPlay.triggersModified = true;
             }
 
 
-            if (Input.GetKeyDown(bindings["Toggle Infinite Ammo"])) {
+            if (Input.GetKeyDown(bindings["Toggle Infinite Ammo"].Value)) {
                 if (!GameManager.instance.player.GetHUD()) return;
                 InfiniteAmmo.Toggle();
                 igl.LogLine($"Toggled infinite ammo");
@@ -130,7 +122,7 @@ namespace RunnerUtils
             }
 
 
-            if (Input.GetKeyDown(bindings["Toggle Throw Cam"])) {
+            if (Input.GetKeyDown(bindings["Toggle Throw Cam"].Value)) {
                 if (ThrowCam.cameraAvailable) {
                     ThrowCam.ToggleCam();
                     igl.LogLine($"Toggled throw cam");
@@ -139,12 +131,12 @@ namespace RunnerUtils
                 }
             }
 
-            if (Input.GetKeyDown(bindings["Save Location"])) {
+            if (Input.GetKeyDown(bindings["Save Location"].Value)) {
                 LocationSave.SaveLocation();
                 igl.LogLine($"Saved location {(saveLocation_verbose.Value ? LocationSave.StringLoc : "")}");
                 FairPlay.locationSaved = true;
             }
-            if (Input.GetKeyDown(bindings["Load Location"])) {
+            if (Input.GetKeyDown(bindings["Load Location"].Value)) {
                 if (LocationSave.Location != Vector3.zero) {
                     LocationSave.RestoreLocation();
                     igl.LogLine($"Loaded previous location {(saveLocation_verbose.Value ? LocationSave.StringLoc : "")}");
@@ -152,7 +144,7 @@ namespace RunnerUtils
                     igl.LogLine("No location saved!");
                 }
             }
-            if (Input.GetKeyDown(bindings["Load Location"]) && Input.GetKeyDown(bindings["Save Location"])) {
+            if (Input.GetKeyDown(bindings["Load Location"].Value) && Input.GetKeyDown(bindings["Save Location"].Value)) {
                 LocationSave.ClearLocation();
                 igl.LogLine($"Cleared saved location");
                 FairPlay.locationSaved = false;
@@ -162,14 +154,14 @@ namespace RunnerUtils
                 PauseTime.Reset();
                 shouldResetScale = false;
             }
-            if (Input.GetKeyDown(bindings["Toggle timestop"])) {
+            if (Input.GetKeyDown(bindings["Toggle timestop"].Value)) {
                 PauseTime.Toggle();
                 igl.LogLine($"Toggled timestop");
                 FairPlay.timePaused = PauseTime.Enabled;
             }
 
 
-            if (Input.GetKeyDown(bindings["Toggle auto jump"])) {
+            if (Input.GetKeyDown(bindings["Toggle auto jump"].Value)) {
                 AutoJump.Toggle();
                 igl.LogLine($"Toggled auto jump");
                 FairPlay.autoJump = AutoJump.Enabled;

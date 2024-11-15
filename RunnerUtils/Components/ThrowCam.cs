@@ -1,19 +1,11 @@
 ﻿using HarmonyLib;
-using BepInEx;
-using BepInEx.Unity.Mono;
-using BepInEx.Configuration;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
-using UnityEngine.SceneManagement;
-using TMPro;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Enemy;
-using System.IO;
-using UnityEngine.UI;
 using AimAssist;
 
 namespace RunnerUtils.Components
@@ -68,7 +60,7 @@ namespace RunnerUtils.Components
         [HarmonyPatch(typeof(PlayerWeaponToss))]
         public static class WeaponToss {
 
-            [HarmonyPatch("Initialize", new Type[] { typeof(WeaponPickup) , typeof(AimTarget)})]
+            [HarmonyPatch("Initialize", new Type[] { typeof(WeaponPickup) , typeof(AimTarget) })]
             [HarmonyPostfix]
             public static void InitPostfix(ref TossedEquipment ___tossedEquipment) {
                 SetupCam();

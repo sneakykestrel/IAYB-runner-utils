@@ -28,7 +28,6 @@ namespace RunnerUtils.Components
             if (locationSaved) igl.LogLine($"Location Saved{(Mod.saveLocation_verbose.Value?$" ({LocationSave.StringLoc})":"")}");
             if (timePaused) igl.LogLine("Time Paused");
             if (autoJump) igl.LogLine("Auto Jump");
-            igl.FlushBuffer();
         }
     }
 }
