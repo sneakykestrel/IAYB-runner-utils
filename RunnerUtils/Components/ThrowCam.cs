@@ -63,13 +63,14 @@ namespace RunnerUtils.Components
             [HarmonyPatch("Initialize", new Type[] { typeof(WeaponPickup) , typeof(AimTarget) })]
             [HarmonyPostfix]
             public static void InitPostfix(ref TossedEquipment ___tossedEquipment) {
+                if (cameraAvailable) Reset();
                 SetupCam();
             }
 
             [HarmonyPatch("Update")]
             [HarmonyPostfix]
             public static void UpdatePostfix(ref bool ___hitSurface, ref Transform ___tiltAnchor, ref Transform ___spinAnchor) {
-                if (___hitSurface) return;
+                if (___hitSurface || !cameraAvailable) return;
                 UpdatePos(___tiltAnchor, m_velocity);
             }
 
@@ -95,13 +96,14 @@ namespace RunnerUtils.Components
             [HarmonyPatch("Initialize")]
             [HarmonyPostfix]
             public static void InitPostfix() {
+                if (cameraAvailable) Reset();
                 SetupCam();
             }
 
             [HarmonyPatch("Update")]
             [HarmonyPostfix]
             public static void UpdatePostfix(ref bool ___collided, ref Rigidbody ___rb) {
-                if (___collided) return;
+                if (___collided || !cameraAvailable) return;
                 UpdatePos(___rb.gameObject.transform, ___rb.velocity);
             }
 

@@ -17,7 +17,7 @@ namespace RunnerUtils
     {
         const string pluginGuid = "kestrel.iamyourbeast.runnerutils";
         const string pluginName = "Runner Utils";
-        const string pluginVersion = "1.2.5";
+        const string pluginVersion = "1.2.7";
 
         static InGameLog igl = new InGameLog($"{pluginName}~Ingame Log (v{pluginVersion})");
         static bool shouldResetScale;
