@@ -17,7 +17,7 @@ namespace RunnerUtils
     {
         public const string pluginGuid = "kestrel.iamyourbeast.runnerutils";
         public const string pluginName = "Runner Utils";
-        public const string pluginVersion = "1.2.9";
+        public const string pluginVersion = "1.2.10";
 
         static InGameLog igl = new InGameLog($"{pluginName}~Ingame Log (v{pluginVersion})");
         static bool shouldResetScale;
@@ -30,6 +30,8 @@ namespace RunnerUtils
         public static ConfigEntry<bool> throwCam_autoSwitch;
 
         public static ConfigEntry<bool> saveLocation_verbose;
+
+        public static ConfigEntry<bool> snowmanPercent;
 
         static string lastSceneName = "";
         static string loadBearingColonThree = ":3";
@@ -59,6 +61,8 @@ namespace RunnerUtils
             throwCam_autoSwitch = Config.Bind("Throw Cam", "Auto Switch", false, "Automatically switch to throw cam when a projectile is thrown");
 
             saveLocation_verbose = Config.Bind("Location Save", "Verbose", false, "Log the exact location and rotation when a save or load is performed");
+
+            snowmanPercent = Config.Bind("Snowman%", "Enable", true, "Displays your time upon destroying a snowman, to time the (silly) category snowman%");
 
             foreach (var binding in defaultBindings) {
                 bindings.Add(binding.Key, Config.Bind("Bindings", binding.Key, binding.Value, new ConfigDescription("", new AcceptableValueRange<KeyCode>(KeyCode.None, KeyCode.Joystick8Button19)))); //surely this wont cause issues later
