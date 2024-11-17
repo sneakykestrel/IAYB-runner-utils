@@ -14,9 +14,11 @@ namespace RunnerUtils.Components
         public static bool locationSaved = false;
         public static bool timePaused = false;
         public static bool autoJump = false;
+        public static bool hfOverlay = false;
 
         public static void Init() {
             igl.anchoredPos = new Vector2(800, 567);
+            igl.sizeDelta = new Vector2(750, 250);
             igl.textAlignment = TMPro.TextAlignmentOptions.TopRight;
             igl.Setup();
         }
@@ -28,6 +30,7 @@ namespace RunnerUtils.Components
             if (locationSaved) igl.LogLine($"Location Saved{(Mod.saveLocation_verbose.Value?$" ({LocationSave.StringLoc})":"")}");
             if (timePaused) igl.LogLine("Time Paused");
             if (autoJump) igl.LogLine("Auto Jump");
+            if (hfOverlay) igl.LogLine("HF Overlay");
         }
     }
 }

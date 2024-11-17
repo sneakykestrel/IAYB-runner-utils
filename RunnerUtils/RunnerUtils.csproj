@@ -98,6 +98,7 @@
     <Compile Include="Components\InfiniteAmmo.cs" />
     <Compile Include="Components\InGameLog.cs" />
     <Compile Include="Components\LocationSave.cs" />
+    <Compile Include="Components\MovementDebug.cs" />
     <Compile Include="Components\PauseTime.cs" />
     <Compile Include="Components\SnowmanPercent.cs" />
     <Compile Include="Components\ThrowCam.cs" />

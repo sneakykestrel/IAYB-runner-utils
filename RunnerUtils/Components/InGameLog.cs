@@ -16,8 +16,8 @@ namespace RunnerUtils
         private int m_bufferLen = 15;
         private bool m_shouldBeVisible = true;
         public int fadeLen = 4;
-        public Vector2 anchoredPos = new Vector2(-800, 535);
-        public Vector2 sizeDelta = new Vector2(750, 250);
+        public Vector2 anchoredPos = new Vector2(-925, 535);
+        public Vector2 sizeDelta = new Vector2(500, 250);
         public TextAlignmentOptions textAlignment = TextAlignmentOptions.TopLeft;
         private TextMeshProUGUI m_textComponent;
         private GameObject m_gameObj;

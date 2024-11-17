@@ -15,9 +15,9 @@ namespace RunnerUtils
     [BepInPlugin(pluginGuid, pluginName, pluginVersion)]
     public class Mod : BaseUnityPlugin
     {
-        const string pluginGuid = "kestrel.iamyourbeast.runnerutils";
-        const string pluginName = "Runner Utils";
-        const string pluginVersion = "1.2.7";
+        public const string pluginGuid = "kestrel.iamyourbeast.runnerutils";
+        public const string pluginName = "Runner Utils";
+        public const string pluginVersion = "1.2.9";
 
         static InGameLog igl = new InGameLog($"{pluginName}~Ingame Log (v{pluginVersion})");
         static bool shouldResetScale;
@@ -51,6 +51,8 @@ namespace RunnerUtils
             defaultBindings.Add("Load Location", KeyCode.RightBracket);
             defaultBindings.Add("Toggle timestop", KeyCode.RightShift);
             defaultBindings.Add("Toggle auto jump", KeyCode.P);
+            defaultBindings.Add("Toggle advanced movement info", KeyCode.None);
+            defaultBindings.Add("Toggle hard fall overlay", KeyCode.U);
 
             throwCam_unlockCamera = Config.Bind("Throw Cam", "Unlock Camera", false, "Unlock the camera when in throw cam");
             throwCam_rangeScalar = Config.Bind("Throw Cam", "Camera Range", 0.2f, new ConfigDescription("Follow range of the throw cam", new AcceptableValueRange<float>(0.01f, 3.0f)));
@@ -167,6 +169,16 @@ namespace RunnerUtils
                 FairPlay.autoJump = AutoJump.Enabled;
             }
 
+            if (Input.GetKeyDown(bindings["Toggle hard fall overlay"].Value)) {
+                MovementDebug.Toggle();
+                igl.LogLine($"Toggled hf overlay");
+                FairPlay.hfOverlay = !FairPlay.hfOverlay;
+            }
+            if (Input.GetKeyDown(bindings["Toggle advanced movement info"].Value)) {
+                MovementDebug.ToggleAdvanced();
+                igl.LogLine($"Toggled movement info");
+            }
+
             FairPlay.Update();
         }
 
@@ -184,6 +196,7 @@ namespace RunnerUtils
             public static void PlayerInitPostfix() {
                 igl.Setup();
                 FairPlay.Init();
+                MovementDebug.Init();
             }
         }
 
