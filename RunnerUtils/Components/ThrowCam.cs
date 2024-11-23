@@ -10,7 +10,7 @@ using AimAssist;
 
 namespace RunnerUtils.Components
 {
-    public class ThrowCam
+    public static class ThrowCam
     {
         private static Camera m_cam;
         private static Camera m_oldCam;

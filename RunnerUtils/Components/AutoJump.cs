@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RunnerUtils.Components
 {
-    public class AutoJump
+    public static class AutoJump
     {
         private static bool m_enabled = false;
 

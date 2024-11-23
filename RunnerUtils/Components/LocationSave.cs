@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace RunnerUtils.Components
 {
-    public class LocationSave
+    public static class LocationSave
     {
         static Vector3 savedLocation = Vector3.zero;
         static Vector3 savedRotation = Vector3.zero;

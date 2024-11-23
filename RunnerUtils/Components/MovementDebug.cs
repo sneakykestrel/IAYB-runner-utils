@@ -10,7 +10,7 @@ namespace RunnerUtils.Components
 {
 
     //awful code that i will rewrite when i am not incredibly tired :3
-    public class MovementDebug
+    public static class MovementDebug
     {
         private static bool m_advanced = false;
         private static bool m_simple = false;

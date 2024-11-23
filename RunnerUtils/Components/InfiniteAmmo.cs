@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace RunnerUtils
 {
-    public class InfiniteAmmo
+    public static class InfiniteAmmo
     {
         private static bool m_enabled;
 

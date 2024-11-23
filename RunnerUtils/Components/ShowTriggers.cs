@@ -11,7 +11,7 @@ using UnityEngine.Events;
 
 namespace RunnerUtils
 {
-    public class ShowTriggers
+    public static class ShowTriggers
     {
         static Texture2D tex = new Texture2D(1, 1);
         static Material mat = new Material(Shader.Find("Sprites/Default"));

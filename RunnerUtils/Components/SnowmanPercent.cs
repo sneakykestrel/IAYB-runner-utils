@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RunnerUtils.Components
 {
-    public class SnowmanPercent
+    public static class SnowmanPercent
     {
         [HarmonyPatch(typeof(Snowman), "Kill")]
         public class PatchSnowman

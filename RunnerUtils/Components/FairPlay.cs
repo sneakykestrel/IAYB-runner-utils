@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace RunnerUtils.Components
 {
-    public class FairPlay
+    public static class FairPlay
     {
         static InGameLog igl = new InGameLog($" ", 10);
         public static bool triggersModified = false;

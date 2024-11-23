@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace RunnerUtils.Components
 {
-    public class PauseTime
+    public static class PauseTime
     {
         private static TimeScale m_timeScale;
         private static bool m_enabled = false;
