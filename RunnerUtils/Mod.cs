@@ -199,6 +199,7 @@ namespace RunnerUtils
             [HarmonyPostfix]
             public static void PlayerInitPostfix() {
                 igl.Setup();
+                ThrowCam.Reset();
                 FairPlay.Init();
                 MovementDebug.Init();
             }

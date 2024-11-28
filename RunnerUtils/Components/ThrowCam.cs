@@ -31,9 +31,11 @@ namespace RunnerUtils.Components
         public static void Reset() {
             cameraAvailable = false;
             GameManager.instance.player.GetHUD().GetReticle().gameObject.SetActive(true);
-            m_cam.enabled = false;
-            m_oldCam.enabled = true;
-            GameObject.Destroy(m_obj);
+            if (m_cam != null) {
+                m_cam.enabled = false;
+                m_oldCam.enabled = true;
+                GameObject.Destroy(m_obj);
+            }
         }
 
         public static void ToggleCam() {

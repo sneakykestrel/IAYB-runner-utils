@@ -100,6 +100,7 @@ namespace RunnerUtils
                 renderer.enabled = !renderer.enabled;
             }
         }
+
         public static void RegisterAllOf<T>() where T : MonoBehaviour {
             registry.Clear();
             foreach (var obj in GameObject.FindObjectsOfType<EventTriggerBoxPlayer>(true)) {
