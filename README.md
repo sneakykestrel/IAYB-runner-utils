@@ -9,6 +9,7 @@ This mod adds various features intended to make routing speedruns easier. These 
 - A camera that follows thrown projectiles
 - Time stop
 - Auto jump
+- Movement information readouts
 
 ## Usage
 
@@ -28,6 +29,8 @@ The default binds are:
 - Load location: `Right bracket`
 - Toggle timestop: `Right Shift`
 - Toggle auto jump: `P`
+- Toggle hard fall overlay: `U`
+- Toggle advanced movement info: `None` (not bound by default)
 
 These can be modified in the `BepInEx/config/kestrel.iamyourbeast.runnerutils.cfg` file, which also contains a few other options.
 
