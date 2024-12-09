@@ -1,6 +1,9 @@
 ﻿using HarmonyLib;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -65,6 +68,30 @@ namespace RunnerUtils
                 } else {
                     return true;
                 }
+            }
+        }
+
+        [HarmonyPatch(typeof(PlayerArmManager))]
+        public class PatchInfiniteThrows
+        {
+            // sorry i cant hear you complaining about mod incompatibilities from inside my cool awesome transpiler
+            [HarmonyPatch(nameof(PlayerArmManager.TossWeapon))]
+            [HarmonyTranspiler]
+            public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+                var codes = new List<CodeInstruction>(instructions);
+                for (int i = 0; i < codes.Count; ++i) {
+                    if (codes[i].Calls(AccessTools.Method(typeof(PlayerArmManager), "SpawnUnarmed"))) {
+                        codes.RemoveAt(i);
+                        codes.InsertRange(i, new CodeInstruction[]
+                        {
+                            new CodeInstruction(OpCodes.Ldarg_1),
+                            CodeInstruction.Call(typeof(UnityEngine.Object), "Instantiate", new Type[] { typeof(WeaponPickup) }),
+                            CodeInstruction.Call(typeof(PlayerArmManager), "EquipWeapon", new Type[] { typeof(WeaponPickup) })
+                        });
+                    }
+                }
+
+                return codes.AsEnumerable();
             }
         }
     }
