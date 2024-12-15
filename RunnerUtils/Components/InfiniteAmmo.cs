@@ -71,7 +71,7 @@ namespace RunnerUtils
             }
         }
 
-        [HarmonyPatch(typeof(PlayerArmManager))]
+        /*[HarmonyPatch(typeof(PlayerArmManager))]
         public class PatchInfiniteThrows
         {
             // sorry i cant hear you complaining about mod incompatibilities from inside my cool awesome transpiler
@@ -93,6 +93,6 @@ namespace RunnerUtils
 
                 return codes.AsEnumerable();
             }
-        }
+        }*/
     }
 }

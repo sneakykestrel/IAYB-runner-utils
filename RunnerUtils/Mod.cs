@@ -197,11 +197,26 @@ namespace RunnerUtils
         {
             [HarmonyPatch("Initialize")]
             [HarmonyPostfix]
-            public static void PlayerInitPostfix() {
+            public static void PlayerInitPostfix(PlayerMovement ___movementScript) {
                 igl.Setup();
                 ThrowCam.Reset();
                 FairPlay.Init();
                 MovementDebug.Init();
+            }
+        }
+
+
+        [HarmonyPatch(typeof(PlayerMovement))]
+        public class PatchPlayerMovement
+        {
+            [HarmonyPatch("Initialize")]
+            [HarmonyPostfix]
+            public static void MovementInitPostfix(CharacterController ___controller) {
+                foreach (var t in FindObjectsByType<Terrain>(FindObjectsInactive.Exclude, FindObjectsSortMode.None)) {
+                    TerrainData td = t.terrainData;
+                    WalkabilityOverlay.MakeWalkabilityTex(ref td, ___controller.slopeLimit);
+                    t.terrainData = td;
+                }
             }
         }
 
