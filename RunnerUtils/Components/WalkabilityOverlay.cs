@@ -14,11 +14,18 @@ namespace RunnerUtils.Components
 {
     public static class WalkabilityOverlay
     {
+        public static Dictionary<TerrainData, float[,,]> cachedMaps = new Dictionary<TerrainData, float[,,]>();
 
         public static void MakeWalkabilityTex(ref TerrainData data, float maxWalkableAngle) {
+
+            if (cachedMaps.ContainsKey(data)) {
+                data.SetAlphamaps(0, 0, cachedMaps[data]);
+                return;
+            }
+
             data.terrainLayers[1].diffuseTexture = Texture2D.blackTexture;
             data.terrainLayers[1].diffuseTexture.Apply(true);
-
+            
             float[,,] map = new float[data.alphamapWidth, data.alphamapHeight, data.alphamapLayers];
             Debug.Log(data.alphamapLayers);
             for (int y = 0; y < data.alphamapHeight; ++y) {
@@ -37,7 +44,9 @@ namespace RunnerUtils.Components
                     }
                 }
             }
+            cachedMaps.Add(data, map);
             data.SetAlphamaps(0, 0, map);
         }
     }
+
 }
