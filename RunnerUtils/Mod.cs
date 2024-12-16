@@ -15,7 +15,7 @@ namespace RunnerUtils
     {
         public const string pluginGuid = "kestrel.iamyourbeast.runnerutils";
         public const string pluginName = "Runner Utils";
-        public const string pluginVersion = "1.3.2";
+        public const string pluginVersion = "2.3.2";
 
         static InGameLog igl = new InGameLog($"{pluginName}~Ingame Log (v{pluginVersion})");
         static bool shouldResetScale;
@@ -36,6 +36,7 @@ namespace RunnerUtils
         static string loadBearingColonThree = ":3";
 
         public void Awake() {
+            this.gameObject.hideFlags = HideFlags.HideAndDontSave; //fuck you unity
             if (loadBearingColonThree != ":3") Application.Quit();
 
             defaultBindings.Add("Trigger Visibility Toggle", KeyCode.Comma);

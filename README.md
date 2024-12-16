@@ -10,6 +10,7 @@ This mod adds various features intended to make routing speedruns easier. These 
 - Time stop
 - Auto jump
 - Movement information readouts
+- An overlay to show what slopes on terrain you can walk up
 
 ## Usage
 
@@ -36,10 +37,12 @@ These can be modified in the `BepInEx/config/kestrel.iamyourbeast.runnerutils.cf
 
 # Installation
 
-!!! You need [Bepinex 6](https://github.com/BepInEx/BepInEx/releases/tag/v6.0.0-pre.2) for mono !!!
-(if you have no idea what the versions mean try BepInEx-Unity.Mono-win-x64-6.0.0-pre.2 and it might work. maybe)
+!!! You need [Bepinex 5](https://github.com/BepInEx/BepInEx/releases/latest) for mono !!!
+(if you have no idea what the versions mean try BepInEx_win_x64_5.4.23.2 and it might work. maybe)
 
 Once bepinex is installed, put the dll into the BepInEx/plugins folder in the game's root directory.
+
+NOTE: Versions < 2.x.x require bepinex 6.0.0-pre2. I don't know why you'd be using an old version but if you are you need to install that instead of bepinex 5
 
 have fun :3
 
