@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using BepInEx;
-using BepInEx.Unity.Mono;
 using BepInEx.Configuration;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -197,14 +196,13 @@ namespace RunnerUtils
         {
             [HarmonyPatch("Initialize")]
             [HarmonyPostfix]
-            public static void PlayerInitPostfix(PlayerMovement ___movementScript) {
+            public static void PlayerInitPostfix() {
                 igl.Setup();
                 ThrowCam.Reset();
                 FairPlay.Init();
                 MovementDebug.Init();
             }
         }
-
 
         [HarmonyPatch(typeof(PlayerMovement))]
         public class PatchPlayerMovement

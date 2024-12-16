@@ -14,7 +14,7 @@ namespace RunnerUtils.Components
 {
     public static class WalkabilityOverlay
     {
-        public static Dictionary<TerrainData, float[,,]> cachedMaps = new Dictionary<TerrainData, float[,,]>();
+        private static Dictionary<TerrainData, float[,,]> cachedMaps = new Dictionary<TerrainData, float[,,]>();
 
         public static void MakeWalkabilityTex(ref TerrainData data, float maxWalkableAngle) {
 
