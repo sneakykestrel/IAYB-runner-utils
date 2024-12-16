@@ -27,7 +27,6 @@ namespace RunnerUtils.Components
             data.terrainLayers[1].diffuseTexture.Apply(true);
             
             float[,,] map = new float[data.alphamapWidth, data.alphamapHeight, data.alphamapLayers];
-            Debug.Log(data.alphamapLayers);
             for (int y = 0; y < data.alphamapHeight; ++y) {
                 for (int x = 0; x < data.alphamapWidth; ++x) {
                     float normX = x * 1f / (data.alphamapWidth - 1);

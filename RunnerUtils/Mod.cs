@@ -1,13 +1,12 @@
-﻿using HarmonyLib;
-using BepInEx;
+﻿using BepInEx;
 using BepInEx.Configuration;
+using Enemy;
+using HarmonyLib;
+using RunnerUtils.Components;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using TMPro;
-using System;
-using System.Collections.Generic;
-using Enemy;
-using RunnerUtils.Components;
 
 namespace RunnerUtils
 {
@@ -16,7 +15,7 @@ namespace RunnerUtils
     {
         public const string pluginGuid = "kestrel.iamyourbeast.runnerutils";
         public const string pluginName = "Runner Utils";
-        public const string pluginVersion = "1.3.1";
+        public const string pluginVersion = "1.3.2";
 
         static InGameLog igl = new InGameLog($"{pluginName}~Ingame Log (v{pluginVersion})");
         static bool shouldResetScale;
@@ -27,6 +26,7 @@ namespace RunnerUtils
         public static ConfigEntry<float> throwCam_rangeScalar;
         public static ConfigEntry<bool> throwCam_unlockCamera;
         public static ConfigEntry<bool> throwCam_autoSwitch;
+        public static ConfigEntry<bool> walkabilityOverlay;
 
         public static ConfigEntry<bool> saveLocation_verbose;
 
@@ -58,6 +58,7 @@ namespace RunnerUtils
             throwCam_unlockCamera = Config.Bind("Throw Cam", "Unlock Camera", false, "Unlock the camera when in throw cam");
             throwCam_rangeScalar = Config.Bind("Throw Cam", "Camera Range", 0.2f, new ConfigDescription("Follow range of the throw cam", new AcceptableValueRange<float>(0.01f, 3.0f)));
             throwCam_autoSwitch = Config.Bind("Throw Cam", "Auto Switch", false, "Automatically switch to throw cam when a projectile is thrown");
+            walkabilityOverlay = Config.Bind("Walkability Overlay", "Enable", false, "Makes all walkable surfaces appear snowy, and all unwalkable surfaces appear black");
 
             saveLocation_verbose = Config.Bind("Location Save", "Verbose", false, "Log the exact location and rotation when a save or load is performed");
 
@@ -67,15 +68,15 @@ namespace RunnerUtils
                 bindings.Add(binding.Key, Config.Bind("Bindings", binding.Key, binding.Value, new ConfigDescription("", new AcceptableValueRange<KeyCode>(KeyCode.None, KeyCode.Joystick8Button19)))); //surely this wont cause issues later
             }
 
-            Logger.LogInfo("Hiiiiiiiiiiii :3");
             new Harmony(pluginGuid).PatchAll();
+            Logger.LogInfo("Hiiiiiiiiiiii :3");
         }
 
-        public void OnEnable() {
+        private void OnEnable() {
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
-        public void Update() {
+        private void Update() {
             //mm if statements
             if (Input.GetKeyDown(bindings["Log Visibility Toggle"].Value)) {
                 igl.ToggleVisibility();
@@ -181,11 +182,11 @@ namespace RunnerUtils
                 MovementDebug.ToggleAdvanced();
                 igl.LogLine($"Toggled movement info");
             }
-
+            
             FairPlay.Update();
         }
 
-        public void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
             ShowTriggers.RegisterAll();
             lastSceneName = scene.name;
             shouldResetScale = true;
@@ -210,10 +211,12 @@ namespace RunnerUtils
             [HarmonyPatch("Initialize")]
             [HarmonyPostfix]
             public static void MovementInitPostfix(CharacterController ___controller) {
-                foreach (Terrain t in FindObjectsByType<Terrain>(FindObjectsInactive.Exclude, FindObjectsSortMode.None)) {
-                    TerrainData td = t.terrainData;
-                    WalkabilityOverlay.MakeWalkabilityTex(ref td, ___controller.slopeLimit);
-                    t.terrainData = td;
+                if (walkabilityOverlay.Value) {
+                    foreach (Terrain t in FindObjectsByType<Terrain>(FindObjectsInactive.Exclude, FindObjectsSortMode.None)) {
+                        TerrainData td = t.terrainData;
+                        WalkabilityOverlay.MakeWalkabilityTex(ref td, ___controller.slopeLimit);
+                        t.terrainData = td;
+                    }
                 }
             }
         }
