@@ -32,7 +32,6 @@ namespace RunnerUtils
 
         public static ConfigEntry<bool> snowmanPercent;
 
-        static string lastSceneName = "";
         static string loadBearingColonThree = ":3";
 
         public void Awake() {
@@ -188,8 +187,6 @@ namespace RunnerUtils
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
-            ShowTriggers.RegisterAll();
-            lastSceneName = scene.name;
             shouldResetScale = true;
         }
 
@@ -199,6 +196,7 @@ namespace RunnerUtils
             [HarmonyPatch("Initialize")]
             [HarmonyPostfix]
             public static void PlayerInitPostfix() {
+                ShowTriggers.RegisterAll();
                 igl.Setup();
                 ThrowCam.Reset();
                 FairPlay.Init();

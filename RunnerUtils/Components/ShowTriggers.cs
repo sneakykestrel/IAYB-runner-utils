@@ -161,7 +161,6 @@ namespace RunnerUtils
         }
 
         private static void RegisterObj(EventTriggerBoxPlayer obj){
-            
 
             Color col = new Color(0, 1, 0, 0.25f);
 
