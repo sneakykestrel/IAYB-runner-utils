@@ -131,6 +131,14 @@ namespace RunnerUtils
             }
         }
 
+        public static void ExtendRegistry() {
+            foreach (var obj in GameObject.FindObjectsOfType<EventTriggerBoxPlayer>(true)) {
+                if (!registry.Contains(obj.gameObject)) {
+                    RegisterObj(obj);
+                }
+            }
+        }
+
         private static void MakeVisible(GameObject obj, Color boxColor) {
             BoxCollider collider;
             if (!obj.TryGetComponent<BoxCollider>(out collider)) return;

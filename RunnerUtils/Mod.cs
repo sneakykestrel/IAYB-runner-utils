@@ -187,6 +187,7 @@ namespace RunnerUtils
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
+            if (mode == LoadSceneMode.Additive) ShowTriggers.ExtendRegistry();
             shouldResetScale = true;
         }
 
