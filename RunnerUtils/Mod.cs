@@ -35,7 +35,7 @@ namespace RunnerUtils
         static string loadBearingColonThree = ":3";
 
         public void Awake() {
-            this.gameObject.hideFlags = HideFlags.HideAndDontSave; //fuck you unity
+            gameObject.hideFlags = HideFlags.HideAndDontSave; //fuck you unity
             if (loadBearingColonThree != ":3") Application.Quit();
 
             defaultBindings.Add("Trigger Visibility Toggle", KeyCode.Comma);

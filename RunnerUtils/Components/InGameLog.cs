@@ -11,8 +11,6 @@ namespace RunnerUtils
 {
     public class InGameLog
     {
-        //TODO: proper errors . just returning probably isnt the best idea
-
         private int m_bufferLen = 15;
         private bool m_shouldBeVisible = true;
         public int fadeLen = 4;
@@ -56,25 +54,29 @@ namespace RunnerUtils
 
         //Logging (flushes the buffer after every call)
         public void LogLine(string message) {
-            if (m_textComponent == null) return;
+            if (m_textComponent == null)
+                throw new InvalidOperationException("Log not initialized! call Setup() before using.");
             buffer.Push(message + "\n");
             FlushBuffer();
         }
 
         public void Log(string message) {
-            if (m_textComponent == null) return;
+            if (m_textComponent == null)
+                throw new InvalidOperationException("Log not initialized! call Setup() before using.");
             buffer.Push(message);
             FlushBuffer();
         }
 
         //Pushing (does not flush buffer after every call)
         public void PushBufferLine(string message) {
-            if (m_textComponent == null) return;
+            if (m_textComponent == null)
+                throw new InvalidOperationException("Log not initialized! call Setup() before using.");
             buffer.Push(message + "\n");
         }
 
         public void PushBuffer(string message) {
-            if (m_textComponent == null) return;
+            if (m_textComponent == null) 
+                throw new InvalidOperationException("Log not initialized! call Setup() before using.");
             buffer.Push(message);
         }
 
@@ -89,7 +91,7 @@ namespace RunnerUtils
             buffer[idx] = message+"\n";
         }
 
-        //times i have been completely stumped trying to debug this awful method: 2
+        //times i have been completely stumped trying to debug this awful method: 3
         //i *really* need to stop using ternaries this much
         public void FlushBuffer() {
             if (m_textComponent == null) return;
