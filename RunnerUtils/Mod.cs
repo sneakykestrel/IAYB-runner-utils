@@ -78,7 +78,7 @@ namespace RunnerUtils
 
         private void Update() {
             //mm if statements
-            if (!GameManager.instance.levelController.IsLevelPaused()) {
+            if (!(GameManager.instance.levelController is null) && !GameManager.instance.levelController.IsLevelPaused()) {
                 if (Input.GetKeyDown(bindings["Log Visibility Toggle"].Value)) {
                     igl.ToggleVisibility();
                     igl.LogLine($"Toggled log visibility");
