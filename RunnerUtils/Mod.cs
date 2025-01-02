@@ -15,7 +15,7 @@ namespace RunnerUtils
     {
         public const string pluginGuid = "kestrel.iamyourbeast.runnerutils";
         public const string pluginName = "Runner Utils";
-        public const string pluginVersion = "2.3.2";
+        public const string pluginVersion = "2.3.3";
 
         static InGameLog igl = new InGameLog($"{pluginName}~Ingame Log (v{pluginVersion})");
         static bool shouldResetScale;
@@ -78,109 +78,111 @@ namespace RunnerUtils
 
         private void Update() {
             //mm if statements
-            if (Input.GetKeyDown(bindings["Log Visibility Toggle"].Value)) {
-                igl.ToggleVisibility();
-                igl.LogLine($"Toggled log visibility");
-            }
-            if (Input.GetKeyDown(bindings["Clear Log"].Value)) {
-                igl.Clear();
-                igl.LogLine($"Cleared Log");
-            }
-
-
-            if (Input.GetKeyDown(bindings["Trigger Visibility Toggle"].Value)) {
-                ShowTriggers.ToggleAll();
-                igl.LogLine($"Toggled all triggers' visibility");
-                FairPlay.triggersModified = true;
-            }
-            if (Input.GetKeyDown(bindings["Force Trigger Visibility On"].Value)) {
-                ShowTriggers.ShowAll();
-                igl.LogLine($"Enabled all triggers' visibility");
-                FairPlay.triggersModified = true;
-            }
-            if (Input.GetKeyDown(bindings["Force Trigger Visibility Off"].Value)) {
-                ShowTriggers.HideAll();
-                igl.LogLine($"Disabled all triggers' visibility");
-                FairPlay.triggersModified = false;
-            }
-            if (Input.GetKeyDown(bindings["OOB Box Visibility Toggle"].Value)) {
-                ShowTriggers.ToggleAllOf<PlayerOutOfBoundsBox>();
-                igl.LogLine($"Toggled OOB boxes' visibility");
-                FairPlay.triggersModified = true;
-            }
-            if (Input.GetKeyDown(bindings["Start Trigger Visibility Toggle"].Value)) {
-                ShowTriggers.ToggleAllOf<PlayerTimerStartBox>();
-                igl.LogLine($"Toggled start triggers' visibility");
-                FairPlay.triggersModified = true;
-            }
-            if (Input.GetKeyDown(bindings["Spawner Visibility Toggle"].Value)) {
-                ShowTriggers.ToggleAllOf<EnemySpawner>();
-                igl.LogLine($"Toggled spawners' visibility");
-                FairPlay.triggersModified = true;
-            }
-
-
-            if (Input.GetKeyDown(bindings["Toggle Infinite Ammo"].Value)) {
-                if (!GameManager.instance.player.GetHUD()) return;
-                InfiniteAmmo.Toggle();
-                igl.LogLine($"Toggled infinite ammo");
-                FairPlay.infiniteAmmo = InfiniteAmmo.Enabled;
-            }
-
-
-            if (Input.GetKeyDown(bindings["Toggle Throw Cam"].Value)) {
-                if (ThrowCam.cameraAvailable) {
-                    ThrowCam.ToggleCam();
-                    igl.LogLine($"Toggled throw cam");
-                } else {
-                    igl.LogLine($"Unable to switch to throw cam ~ no thrown weapons are in the air");
+            if (!GameManager.instance.levelController.IsLevelPaused()) {
+                if (Input.GetKeyDown(bindings["Log Visibility Toggle"].Value)) {
+                    igl.ToggleVisibility();
+                    igl.LogLine($"Toggled log visibility");
                 }
-            }
-
-            if (Input.GetKeyDown(bindings["Save Location"].Value)) {
-                LocationSave.SaveLocation();
-                igl.LogLine($"Saved location {(saveLocation_verbose.Value ? LocationSave.StringLoc : "")}");
-                FairPlay.locationSaved = true;
-            }
-            if (Input.GetKeyDown(bindings["Load Location"].Value)) {
-                if (LocationSave.Location != Vector3.zero) {
-                    LocationSave.RestoreLocation();
-                    igl.LogLine($"Loaded previous location {(saveLocation_verbose.Value ? LocationSave.StringLoc : "")}");
-                } else {
-                    igl.LogLine("No location saved!");
+                if (Input.GetKeyDown(bindings["Clear Log"].Value)) {
+                    igl.Clear();
+                    igl.LogLine($"Cleared Log");
                 }
-            }
-            if (Input.GetKeyDown(bindings["Load Location"].Value) && Input.GetKeyDown(bindings["Save Location"].Value)) {
-                LocationSave.ClearLocation();
-                igl.LogLine($"Cleared saved location");
-                FairPlay.locationSaved = false;
-            }
-
-            if (GameManager.instance.timeManager != null && shouldResetScale) {
-                PauseTime.Reset();
-                shouldResetScale = false;
-            }
-            if (Input.GetKeyDown(bindings["Toggle timestop"].Value)) {
-                PauseTime.Toggle();
-                igl.LogLine($"Toggled timestop");
-                FairPlay.timePaused = PauseTime.Enabled;
-            }
 
 
-            if (Input.GetKeyDown(bindings["Toggle auto jump"].Value)) {
-                AutoJump.Toggle();
-                igl.LogLine($"Toggled auto jump");
-                FairPlay.autoJump = AutoJump.Enabled;
-            }
+                if (Input.GetKeyDown(bindings["Trigger Visibility Toggle"].Value)) {
+                    ShowTriggers.ToggleAll();
+                    igl.LogLine($"Toggled all triggers' visibility");
+                    FairPlay.triggersModified = true;
+                }
+                if (Input.GetKeyDown(bindings["Force Trigger Visibility On"].Value)) {
+                    ShowTriggers.ShowAll();
+                    igl.LogLine($"Enabled all triggers' visibility");
+                    FairPlay.triggersModified = true;
+                }
+                if (Input.GetKeyDown(bindings["Force Trigger Visibility Off"].Value)) {
+                    ShowTriggers.HideAll();
+                    igl.LogLine($"Disabled all triggers' visibility");
+                    FairPlay.triggersModified = false;
+                }
+                if (Input.GetKeyDown(bindings["OOB Box Visibility Toggle"].Value)) {
+                    ShowTriggers.ToggleAllOf<PlayerOutOfBoundsBox>();
+                    igl.LogLine($"Toggled OOB boxes' visibility");
+                    FairPlay.triggersModified = true;
+                }
+                if (Input.GetKeyDown(bindings["Start Trigger Visibility Toggle"].Value)) {
+                    ShowTriggers.ToggleAllOf<PlayerTimerStartBox>();
+                    igl.LogLine($"Toggled start triggers' visibility");
+                    FairPlay.triggersModified = true;
+                }
+                if (Input.GetKeyDown(bindings["Spawner Visibility Toggle"].Value)) {
+                    ShowTriggers.ToggleAllOf<EnemySpawner>();
+                    igl.LogLine($"Toggled spawners' visibility");
+                    FairPlay.triggersModified = true;
+                }
 
-            if (Input.GetKeyDown(bindings["Toggle hard fall overlay"].Value)) {
-                MovementDebug.Toggle();
-                igl.LogLine($"Toggled hf overlay");
-                FairPlay.hfOverlay = !FairPlay.hfOverlay;
-            }
-            if (Input.GetKeyDown(bindings["Toggle advanced movement info"].Value)) {
-                MovementDebug.ToggleAdvanced();
-                igl.LogLine($"Toggled movement info");
+
+                if (Input.GetKeyDown(bindings["Toggle Infinite Ammo"].Value)) {
+                    if (!GameManager.instance.player.GetHUD()) return;
+                    InfiniteAmmo.Toggle();
+                    igl.LogLine($"Toggled infinite ammo");
+                    FairPlay.infiniteAmmo = InfiniteAmmo.Enabled;
+                }
+
+
+                if (Input.GetKeyDown(bindings["Toggle Throw Cam"].Value)) {
+                    if (ThrowCam.cameraAvailable) {
+                        ThrowCam.ToggleCam();
+                        igl.LogLine($"Toggled throw cam");
+                    } else {
+                        igl.LogLine($"Unable to switch to throw cam ~ no thrown weapons are in the air");
+                    }
+                }
+
+                if (Input.GetKeyDown(bindings["Save Location"].Value)) {
+                    LocationSave.SaveLocation();
+                    igl.LogLine($"Saved location {(saveLocation_verbose.Value ? LocationSave.StringLoc : "")}");
+                    FairPlay.locationSaved = true;
+                }
+                if (Input.GetKeyDown(bindings["Load Location"].Value)) {
+                    if (LocationSave.Location != Vector3.zero) {
+                        LocationSave.RestoreLocation();
+                        igl.LogLine($"Loaded previous location {(saveLocation_verbose.Value ? LocationSave.StringLoc : "")}");
+                    } else {
+                        igl.LogLine("No location saved!");
+                    }
+                }
+                if (Input.GetKeyDown(bindings["Load Location"].Value) && Input.GetKeyDown(bindings["Save Location"].Value)) {
+                    LocationSave.ClearLocation();
+                    igl.LogLine($"Cleared saved location");
+                    FairPlay.locationSaved = false;
+                }
+
+                if (GameManager.instance.timeManager != null && shouldResetScale) {
+                    PauseTime.Reset();
+                    shouldResetScale = false;
+                }
+                if (Input.GetKeyDown(bindings["Toggle timestop"].Value)) {
+                    PauseTime.Toggle();
+                    igl.LogLine($"Toggled timestop");
+                    FairPlay.timePaused = PauseTime.Enabled;
+                }
+
+
+                if (Input.GetKeyDown(bindings["Toggle auto jump"].Value)) {
+                    AutoJump.Toggle();
+                    igl.LogLine($"Toggled auto jump");
+                    FairPlay.autoJump = AutoJump.Enabled;
+                }
+
+                if (Input.GetKeyDown(bindings["Toggle hard fall overlay"].Value)) {
+                    MovementDebug.Toggle();
+                    igl.LogLine($"Toggled hf overlay");
+                    FairPlay.hfOverlay = !FairPlay.hfOverlay;
+                }
+                if (Input.GetKeyDown(bindings["Toggle advanced movement info"].Value)) {
+                    MovementDebug.ToggleAdvanced();
+                    igl.LogLine($"Toggled movement info");
+                }
             }
             
             FairPlay.Update();
