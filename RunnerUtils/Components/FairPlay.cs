@@ -15,6 +15,7 @@ namespace RunnerUtils.Components
         public static bool timePaused = false;
         public static bool autoJump = false;
         public static bool hfOverlay = false;
+        public static bool viewCones = false;
 
         public static void Init() {
             igl.anchoredPos = new Vector2(800, 567);
@@ -31,6 +32,8 @@ namespace RunnerUtils.Components
             if (timePaused) igl.LogLine("Time Paused");
             if (autoJump) igl.LogLine("Auto Jump");
             if (hfOverlay) igl.LogLine("HF Overlay");
+            if (viewCones) igl.LogLine("View Cones");
+
         }
     }
 }

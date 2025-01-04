@@ -1,0 +1,216 @@
+﻿using BepInEx.Configuration;
+using Enemy;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace RunnerUtils.Components;
+
+public class RUInputManager
+{
+    public struct DefaultBindingInfo(string identifier, Action action, string description = "", KeyCode key = KeyCode.None)
+    {
+        public Action action = action;
+        public string identifier = identifier;
+        public string description = description;
+        public KeyCode key = key;
+    }
+
+    private Dictionary<ConfigEntry<KeyCode>, Action> bindings = [];
+
+    // Bind the default config values to a specified config file
+    public void BindToConfig(ConfigFile config) {
+        foreach (var defaultBinding in DefaultBindings) {
+            var configEntry = config.Bind(
+                defaultBinding.key != KeyCode.None ? "Keybinds" : "Keybinds.Optional",
+                defaultBinding.identifier,
+                defaultBinding.key,
+                defaultBinding.description
+            );
+
+            bindings[configEntry] = defaultBinding.action;
+        }
+    }
+
+    public void Update() {
+        if (GameManager.instance.levelController is not null && !GameManager.instance.levelController.IsLevelPaused()) {
+            foreach (var binding in bindings) {
+                if (Input.GetKeyDown(binding.Key.Value)) { // lol
+                    binding.Value?.Invoke();
+                }
+            }
+        }
+    }
+
+    public static List<DefaultBindingInfo> DefaultBindings { get; private set; } = [
+        new(
+            identifier: "Log Visibility Toggle",
+            key: KeyCode.K,
+            action: () => {
+                Mod.Igl.ToggleVisibility();
+                Mod.Igl.LogLine($"Toggled log visibility");
+            }
+        ),
+        new(
+            identifier: "Clear Log",
+            key: KeyCode.J,
+            action: () => {
+                Mod.Igl.Clear();
+                Mod.Igl.LogLine($"Cleared Log");
+            }
+        ),
+        new(
+            identifier: "Force Trigger Visibility On",
+            key: KeyCode.O,
+            action: () => {
+                ShowTriggers.ShowAll();
+                Mod.Igl.LogLine($"Enabled all triggers' visibility");
+                FairPlay.triggersModified = true;
+            }
+        ),
+        new(
+            identifier: "Force Trigger Visibility Off",
+            key: KeyCode.I,
+            action: () => {
+                ShowTriggers.HideAll();
+                Mod.Igl.LogLine($"Disabled all triggers' visibility");
+                FairPlay.triggersModified = false;
+            }
+        ),
+        new(
+            identifier: "Toggle Infinite Ammo",
+            key: KeyCode.L,
+            action: () => {
+                if (!GameManager.instance.player.GetHUD()) return;
+                InfiniteAmmo.Toggle();
+                Mod.Igl.LogLine($"Toggled infinite ammo");
+                FairPlay.infiniteAmmo = InfiniteAmmo.Enabled;
+            }
+        ),
+        new(
+            identifier: "Toggle Throw Cam",
+            key: KeyCode.Semicolon,
+            action: () => {
+                if (ThrowCam.cameraAvailable) {
+                    ThrowCam.ToggleCam();
+                    Mod.Igl.LogLine($"Toggled throw cam");
+                } else {
+                    Mod.Igl.LogLine($"Unable to switch to throw cam ~ no thrown weapons are in the air");
+                }
+            }
+        ),
+        new(
+            identifier: "Toggle auto jump",
+            key: KeyCode.M,
+            action: () => {
+                AutoJump.Toggle();
+                Mod.Igl.LogLine($"Toggled auto jump");
+                FairPlay.autoJump = AutoJump.Enabled;
+            }
+        ),
+        new(
+            identifier: "Toggle hard fall overlay",
+            key: KeyCode.U,
+            action: () => {
+                MovementDebug.Toggle();
+                Mod.Igl.LogLine($"Toggled hf overlay");
+                FairPlay.hfOverlay = !FairPlay.hfOverlay;
+            }
+        ),
+        new(
+            identifier: "Toggle timestop",
+            key: KeyCode.RightShift,
+            action: () => {
+                PauseTime.Toggle();
+                Mod.Igl.LogLine($"Toggled timestop");
+                FairPlay.timePaused = PauseTime.Enabled;
+            }
+        ),
+        new(
+            identifier: "Save Location",
+            key: KeyCode.LeftBracket,
+            action: () => {
+                LocationSave.SaveLocation();
+                Mod.Igl.LogLine($"Saved location {(Mod.saveLocation_verbose.Value ? LocationSave.StringLoc : "")}");
+                FairPlay.locationSaved = true;
+            }
+        ),
+        new(
+            identifier: "Load Location",
+            key: KeyCode.RightBracket,
+            action: () => {
+                if (LocationSave.Location != Vector3.zero) {
+                    LocationSave.RestoreLocation();
+                    Mod.Igl.LogLine($"Loaded previous location {(Mod.saveLocation_verbose.Value ? LocationSave.StringLoc : "")}");
+                } else {
+                    Mod.Igl.LogLine("No location saved!");
+                }
+            }
+        ),
+        new(
+            identifier: "Clear Location",
+            key: KeyCode.P,
+            action: () => {
+                LocationSave.ClearLocation();
+                Mod.Igl.LogLine($"Cleared saved location");
+                FairPlay.locationSaved = false;
+            }
+        ),
+        new(
+            identifier: "Toggle view cones visibility",
+            key: KeyCode.Y,
+            action: () => {
+                ViewCones.Toggle();
+                Mod.Igl.LogLine($"Toggled view cones' visibility");
+                FairPlay.viewCones = !FairPlay.viewCones;
+            }
+        ),
+
+        // OPTIONAL SETTINGS
+
+        new(
+            identifier: "Trigger Visibility Toggle",
+            action: () => {
+                ShowTriggers.ToggleAll();
+                Mod.Igl.LogLine($"Toggled all triggers' visibility");
+                FairPlay.triggersModified = true;
+            }
+        ),
+        new(
+            identifier: "OOB Box Visibility Toggle",
+            action: () => {
+                ShowTriggers.ToggleAllOf<PlayerOutOfBoundsBox>();
+                Mod.Igl.LogLine($"Toggled OOB boxes' visibility");
+                FairPlay.triggersModified = true;
+            }
+        ),
+        new(
+            identifier: "Start Trigger Visibility Toggle",
+            action: () => {
+                ShowTriggers.ToggleAllOf<PlayerTimerStartBox>();
+                Mod.Igl.LogLine($"Toggled start triggers' visibility");
+                FairPlay.triggersModified = true;
+            }
+        ),
+        new(
+            identifier: "Spawner Visibility Toggle",
+            action: () => {
+                ShowTriggers.ToggleAllOf<EnemySpawner>();
+                Mod.Igl.LogLine($"Toggled spawners' visibility");
+                FairPlay.triggersModified = true;
+            }
+        ),
+        new(
+            identifier: "Toggle advanced movement info",
+            action: () => {
+                MovementDebug.ToggleAdvanced();
+                Mod.Igl.LogLine($"Toggled movement info");
+            }
+        ),
+    ];
+}

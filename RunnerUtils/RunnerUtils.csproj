@@ -9,6 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RunnerUtils</RootNamespace>
     <AssemblyName>RunnerUtils</AssemblyName>
+    <LangVersion>latest</LangVersion>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -97,6 +98,8 @@
     <Compile Include="Components\AutoJump.cs" />
     <Compile Include="Components\FairPlay.cs" />
     <Compile Include="Components\InfiniteAmmo.cs" />
+    <Compile Include="Components\RUInputManager.cs" />
+    <Compile Include="Components\ViewCones.cs" />
     <Compile Include="InGameLog.cs" />
     <Compile Include="Components\LocationSave.cs" />
     <Compile Include="Components\MovementDebug.cs" />
