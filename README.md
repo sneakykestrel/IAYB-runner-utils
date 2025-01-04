@@ -2,7 +2,7 @@
 
 This mod adds various features intended to make routing speedruns easier. These include:
 
-- Showing triggers & enemy spawners
+- Showing triggers, enemy spawners and enemy viewcones
 - Toggleable infinite ammo
 - Save/Load keybinds for player location and rotation
 - Snowman% time popup
