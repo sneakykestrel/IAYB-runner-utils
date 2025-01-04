@@ -25,6 +25,7 @@ namespace RunnerUtils.Components
         }
 
         public static void Update() {
+            if (igl.m_textComponent == null) return;
             igl.Clear();
             if (triggersModified) igl.LogLine("Triggers");
             if (infiniteAmmo) igl.LogLine("Ammo");

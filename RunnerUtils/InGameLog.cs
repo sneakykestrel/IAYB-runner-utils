@@ -17,7 +17,7 @@ namespace RunnerUtils
         public Vector2 anchoredPos = new Vector2(-925, 535);
         public Vector2 sizeDelta = new Vector2(500, 250);
         public TextAlignmentOptions textAlignment = TextAlignmentOptions.TopLeft;
-        private TextMeshProUGUI m_textComponent;
+        public TextMeshProUGUI m_textComponent { get; private set; }
         private GameObject m_gameObj;
         string m_name;
         CircularArray<string> buffer;
