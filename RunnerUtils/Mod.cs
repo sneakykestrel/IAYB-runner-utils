@@ -16,7 +16,7 @@ namespace RunnerUtils
     {
         public const string pluginGuid = "kestrel.iamyourbeast.runnerutils";
         public const string pluginName = "Runner Utils";
-        public const string pluginVersion = "2.3.3";
+        public const string pluginVersion = "2.4.0";
 
         public static Mod Instance { get; private set; }
         public static RUInputManager InputManager { get; private set; } = new();
