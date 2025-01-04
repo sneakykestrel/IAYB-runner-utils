@@ -8,6 +8,7 @@ using UnityEngine;
 using Enemy;
 using HarmonyLib;
 using TMPro;
+using System.Collections;
 
 namespace RunnerUtils.Components
 {
@@ -100,6 +101,8 @@ namespace RunnerUtils.Components
         [RequireComponent(typeof(MeshFilter))]
         public class ViewCone : MonoBehaviour
         {
+            private static Dictionary<(float, float), Mesh> cachedMeshes = new();
+
             const int subdivisions = 25;
             public bool ForceDisable { get => m_forceDisable; set {
                     m_forceDisable = value;
@@ -118,7 +121,18 @@ namespace RunnerUtils.Components
 
             public void Start() {
                 var enemy = transform.parent.gameObject.GetComponent<EnemyHuman>();
-                GetComponent<MeshFilter>().sharedMesh = CreateConeMesh(subdivisions, enemy.GetDetectionRadius(), enemy.GetDetectionAngle());
+                Mesh mesh;
+                float range = enemy.GetDetectionRadius();
+                float angle = enemy.GetDetectionAngle();
+
+                if (cachedMeshes.ContainsKey((range, angle))) {
+                    mesh = cachedMeshes[(range, angle)];
+                } else {
+                    mesh = CreateConeMesh(subdivisions, range, angle);
+                    cachedMeshes[(range, angle)] = mesh;
+                }
+
+                GetComponent<MeshFilter>().sharedMesh = mesh;
                 m_renderer = GetComponent<MeshRenderer>();
                 cones.Add(this);
                 ForceDisable = !FairPlay.viewCones;
