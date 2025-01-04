@@ -47,6 +47,7 @@ namespace RunnerUtils.Components
             [HarmonyPatch("Start")]
             [HarmonyPostfix]
             public static void CreateViewCone(EnemyHuman __instance) {
+                if (__instance.GetSniperScanZone() is not null) return;
                 var obj = new GameObject();
                 var mr = obj.AddComponent<MeshRenderer>();
                 mr.material = ShowTriggers.mat;
@@ -62,12 +63,16 @@ namespace RunnerUtils.Components
             [HarmonyPatch("OnPlayerSeen")]
             [HarmonyPostfix]
             public static void RecolorConeOnSeen(EnemyHuman __instance) {
+                if (__instance.GetSniperScanZone() is not null) return;
+
                 __instance.transform.Find("View Cone").GetComponent<ViewCone>().SetColor(seenColor);
             }
 
             [HarmonyPatch("RefreshPlayerInView")]
             [HarmonyPrefix]
             public static void UpdateViewConeVisibility(EnemyHuman __instance) {
+                if (__instance.GetSniperScanZone() is not null) return;
+
                 var cone = __instance.transform.Find("View Cone").GetComponent<ViewCone>();
                 if (cone.ForceDisable) return;
 
@@ -121,6 +126,7 @@ namespace RunnerUtils.Components
 
             public void Start() {
                 var enemy = transform.parent.gameObject.GetComponent<EnemyHuman>();
+
                 Mesh mesh;
                 float range = enemy.GetDetectionRadius();
                 float angle = enemy.GetDetectionAngle();
