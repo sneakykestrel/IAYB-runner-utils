@@ -68,12 +68,14 @@ namespace RunnerUtils
         }
 
         private void Update() {
+            InputManager.Update();
             if (GameManager.instance.timeManager is not null && shouldResetScale) {
                 PauseTime.Reset();
                 shouldResetScale = false;
             }
-            InputManager.Update();
-            FairPlay.Update();
+            if (GameManager.instance.player is not null) {
+                FairPlay.Update();
+            }
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
