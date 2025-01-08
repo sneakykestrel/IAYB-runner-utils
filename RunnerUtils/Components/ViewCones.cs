@@ -65,7 +65,9 @@ namespace RunnerUtils.Components
             public static void RecolorConeOnSeen(EnemyHuman __instance) {
                 if (__instance.GetSniperScanZone() is not null) return;
 
-                __instance.transform.Find("View Cone").GetComponent<ViewCone>().SetColor(seenColor);
+                var cone = __instance.transform.Find("View Cone");
+                if (cone is null) return;
+                cone.GetComponent<ViewCone>().SetColor(seenColor);
             }
 
             [HarmonyPatch("RefreshPlayerInView")]
@@ -73,7 +75,9 @@ namespace RunnerUtils.Components
             public static void UpdateViewConeVisibility(EnemyHuman __instance) {
                 if (__instance.GetSniperScanZone() is not null) return;
 
-                var cone = __instance.transform.Find("View Cone").GetComponent<ViewCone>();
+                var coneObj = __instance.transform.Find("View Cone");
+                if (coneObj is null) return;
+                var cone = coneObj.GetComponent<ViewCone>();
                 if (cone.ForceDisable) return;
 
                 var targetPosition = GameManager.instance.player.GetTargetCenter(0f);
@@ -97,7 +101,9 @@ namespace RunnerUtils.Components
             [HarmonyPostfix]
             public static void DestroyViewCone(Enemy.Enemy __instance) {
                 if (__instance is EnemyHuman) {
-                    UnityEngine.Object.Destroy(__instance.transform.Find("View Cone").gameObject);
+                    var coneTransform = __instance.transform.Find("View Cone");
+                    if (coneTransform is null) return;
+                    UnityEngine.Object.Destroy(coneTransform.gameObject);
                 }
             }
         }
