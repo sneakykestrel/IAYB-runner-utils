@@ -38,16 +38,15 @@ public class RUInputManager
     }
 
     public void Update() {
-        if (GameManager.instance.levelController is not null && !GameManager.instance.levelController.IsLevelPaused()) {
-            foreach (var binding in bindings) {
-                if (Input.GetKeyDown(binding.Key.Value)) { // lol
-                    binding.Value?.Invoke();
-                }
+        if (GameManager.instance.levelController is null || GameManager.instance.levelController.IsLevelPaused()) return;
+        foreach (var binding in bindings) {
+            if (Input.GetKeyDown(binding.Key.Value)) { // lol
+                binding.Value?.Invoke();
             }
         }
     }
 
-    public static List<DefaultBindingInfo> DefaultBindings { get; private set; } = [
+    private static List<DefaultBindingInfo> DefaultBindings { get; } = [
         new(
             identifier: "Log Visibility Toggle",
             key: KeyCode.K,
@@ -144,7 +143,7 @@ public class RUInputManager
             identifier: "Load Location",
             key: KeyCode.RightBracket,
             action: () => {
-                if (LocationSave.Location != Vector3.zero) {
+                if (LocationSave.savedPosition is not null) {
                     LocationSave.RestoreLocation();
                     Mod.Igl.LogLine($"Loaded previous location {(Mod.saveLocation_verbose.Value ? LocationSave.StringLoc : "")}");
                 } else {
