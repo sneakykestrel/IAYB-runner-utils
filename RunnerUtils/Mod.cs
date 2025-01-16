@@ -15,7 +15,7 @@ public class Mod : BaseUnityPlugin
 {
     public const string pluginGuid = "kestrel.iamyourbeast.runnerutils";
     public const string pluginName = "Runner Utils";
-    public const string pluginVersion = "2.4.1";
+    public const string pluginVersion = "2.4.2";
 
     public static Mod Instance { get; private set; }
     private static RUInputManager InputManager { get; set; } = new();
