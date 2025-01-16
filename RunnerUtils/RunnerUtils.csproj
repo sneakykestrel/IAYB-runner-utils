@@ -112,6 +112,9 @@
     <Folder Include="Components\UI\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\logo.png">
+      <Link>logo.png</Link>
+    </Content>
     <Content Include="..\README.md">
       <Link>README.md</Link>
     </Content>
