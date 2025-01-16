@@ -111,6 +111,11 @@
   <ItemGroup>
     <Folder Include="Components\UI\" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\README.md">
+      <Link>README.md</Link>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(TargetDir)$(TargetName).dll" "$(IAYB_PATH)\BepInEx\plugins\";</PostBuildEvent>

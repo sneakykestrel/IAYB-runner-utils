@@ -1,4 +1,4 @@
-# Runner Utils mod for I Am Your Beast
+# Runner Utils
 
 This mod adds various features intended to make routing speedruns easier. These include:
 
@@ -35,7 +35,7 @@ The default binds are:
 
 These can be modified in the `BepInEx/config/kestrel.iamyourbeast.runnerutils.cfg` file, which also contains a few other options.
 
-# Installation
+## Manual Installation
 
 !!! You need [Bepinex 5](https://github.com/BepInEx/BepInEx/releases/latest) for mono !!!
 (if you have no idea what the versions mean try BepInEx_win_x64_5.4.23.2 and it might work. maybe)
@@ -46,4 +46,4 @@ NOTE: Versions < 2.x.x require bepinex 6.0.0-pre2. I don't know why you'd be usi
 
 have fun :3
 
-![](https://files.catbox.moe/fu6dqo.png)
+<img src ="https://files.catbox.moe/fu6dqo.png" width="250" alt="kity">

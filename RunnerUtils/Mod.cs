@@ -98,7 +98,7 @@ public class Mod : BaseUnityPlugin
         [HarmonyPostfix]
         public static void MovementInitPostfix(CharacterController ___controller) {
             if (walkabilityOverlay.Value) {
-                foreach (Terrain t in FindObjectsByType<Terrain>(FindObjectsInactive.Exclude, FindObjectsSortMode.None)) {
+                foreach (Terrain t in Terrain.activeTerrains) {
                     TerrainData td = t.terrainData;
                     WalkabilityOverlay.MakeWalkabilityTex(ref td, ___controller.slopeLimit);
                     t.terrainData = td;
