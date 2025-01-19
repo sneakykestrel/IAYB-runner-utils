@@ -171,7 +171,7 @@ public static class ShowTriggers
 
         Color col = new Color(0, 1, 0, 0.25f);
 
-        UnityEvent onTrigger = AccessTools.Field(typeof(EventTriggerBoxPlayer), "onTrigger").GetValue(obj) as UnityEvent;
+        UnityEvent onTrigger = obj.onTrigger;
         int eventCount = onTrigger?.GetPersistentEventCount() ?? 0;
 
         for (int i = 0; i < eventCount; ++i) {

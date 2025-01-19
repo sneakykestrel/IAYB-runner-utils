@@ -19,9 +19,9 @@ public static class AutoJump
         [HarmonyPrefix]
         public static bool Prefix(ref PlayerMovement __instance) {
             if (!Enabled) return true;
-            var perchDetachment = (bool)AccessTools.Method(typeof(PlayerMovement), "BlockPerchDetachment").Invoke(__instance, null);
+            var perchDetachment = __instance.BlockPerchDetachment();
             if (__instance.CanJump() && !perchDetachment && GameManager.instance.inputManager.jump.Held()) {
-                AccessTools.Method(typeof(PlayerMovement), "Jump").Invoke(__instance, null);
+                __instance.Jump();
             }
             return false;
         }

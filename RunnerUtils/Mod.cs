@@ -7,6 +7,7 @@ using RunnerUtils.Components;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Security.Permissions;
 
 namespace RunnerUtils;
 

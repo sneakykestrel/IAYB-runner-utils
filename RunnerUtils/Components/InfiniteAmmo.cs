@@ -36,9 +36,9 @@ public static class InfiniteAmmo
         }
     }
 
-    private static void ColorAmmoSlots(ref List<HUDAmmoIndicatorSlot> slots, Color color) {
+    private static void ColorAmmoSlots(List<HUDAmmoIndicatorSlot> slots, Color color) {
         foreach (var t in slots) {
-            AccessTools.Field(typeof(HUDAmmoIndicatorSlot), "lowAmmoColor").SetValue(t, color);
+            t.lowAmmoColor = color;
             t.LowAmmo();
         }
     }
@@ -50,12 +50,11 @@ public static class InfiniteAmmo
         public static void Postfix(ref List<HUDAmmoIndicatorSlot> ___spawnedSlots) {
             for (int i = 0; i < ___spawnedSlots.Count; ++i) {
                 if (m_enabled) {
-                    ColorAmmoSlots(ref ___spawnedSlots, Color.red);
+                    ColorAmmoSlots(___spawnedSlots, Color.red);
                 }
                 else {
-                    ColorAmmoSlots(ref ___spawnedSlots, Color.white);
-                    AccessTools.Field(typeof(HUDAmmoIndicatorSlot), "lowAmmoColor")
-                        .SetValue(___spawnedSlots[i], Color.yellow);
+                    ColorAmmoSlots(___spawnedSlots, Color.white);
+                    ___spawnedSlots[i].lowAmmoColor = Color.yellow;
                 }
             }
         }
