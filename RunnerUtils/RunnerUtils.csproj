@@ -13,6 +13,7 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -92,11 +93,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComponentBase.cs" />
     <Compile Include="Components\AutoJump.cs" />
-    <Compile Include="Components\FairPlay.cs" />
+    <Compile Include="Components\HardFallOverlay.cs" />
     <Compile Include="Components\InfiniteAmmo.cs" />
     <Compile Include="Components\RUInputManager.cs" />
     <Compile Include="Components\ViewCones.cs" />
+    <Compile Include="FairPlay.cs" />
     <Compile Include="InGameLog.cs" />
     <Compile Include="Components\LocationSave.cs" />
     <Compile Include="Components\MovementDebug.cs" />

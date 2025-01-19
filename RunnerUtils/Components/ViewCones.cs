@@ -12,21 +12,27 @@ using System.Collections;
 
 namespace RunnerUtils.Components;
 
-public static class ViewCones
+public class ViewCones : ComponentBase<ViewCones>
 {
-    public static void Enable() {
+    public override string Identifier => "View Cones";
+    public override bool ShowOnFairPlay => true;
+
+    public override void Enable() {
+        base.Enable();
         foreach (var cone in cones) {
             cone.ForceDisable = false;
         }
     }
 
-    public static void Disable() {
+    public override void Disable() {
+        base.Disable();
         foreach (var cone in cones) {
             cone.ForceDisable = true;
         }
     }
 
-    public static void Toggle() {
+    public override void Toggle() {
+        base.Toggle();
         foreach (var cone in cones) {
             cone.ForceDisable = !cone.ForceDisable;
         }
@@ -66,8 +72,7 @@ public static class ViewCones
             if (__instance.GetSniperScanZone() is not null) return;
 
             var cone = __instance.transform.Find("View Cone");
-            if (cone is null) return;
-            cone.GetComponent<ViewCone>().SetColor(seenColor);
+            cone?.GetComponent<ViewCone>().SetColor(seenColor);
         }
 
         [HarmonyPatch("RefreshPlayerInView")]
@@ -86,11 +91,7 @@ public static class ViewCones
 
             if (__instance.GetHasPersonallySeenPlayer()) return;
 
-            if (!__instance.PositionSightlineClear(targetPosition)) {
-                cone.SetColor(noSightlineColor);
-            } else {
-                cone.SetColor(defaultColor);
-            }
+            cone.SetColor(!__instance.PositionSightlineClear(targetPosition) ? noSightlineColor : defaultColor);
         }
     }
 
@@ -100,11 +101,10 @@ public static class ViewCones
         [HarmonyPatch("Kill")]
         [HarmonyPostfix]
         public static void DestroyViewCone(Enemy.Enemy __instance) {
-            if (__instance is EnemyHuman) {
-                var coneTransform = __instance.transform.Find("View Cone");
-                if (coneTransform is null) return;
-                UnityEngine.Object.Destroy(coneTransform.gameObject);
-            }
+            if (__instance is not EnemyHuman) return;
+            var coneTransform = __instance.transform.Find("View Cone");
+            if (coneTransform is null) return;
+            UnityEngine.Object.Destroy(coneTransform.gameObject);
         }
     }
 
@@ -114,7 +114,7 @@ public static class ViewCones
     {
         private static Dictionary<(float, float), Mesh> cachedMeshes = new();
 
-        private const int subdivisions = 25;
+        private const int defaultSubdivisions = 25;
         public bool ForceDisable { get => m_forceDisable; set {
                 m_forceDisable = value;
                 m_renderer.enabled = !value;
@@ -140,14 +140,14 @@ public static class ViewCones
             if (cachedMeshes.ContainsKey((range, angle))) {
                 mesh = cachedMeshes[(range, angle)];
             } else {
-                mesh = CreateConeMesh(subdivisions, range, angle);
+                mesh = CreateConeMesh(defaultSubdivisions, range, angle);
                 cachedMeshes[(range, angle)] = mesh;
             }
 
             GetComponent<MeshFilter>().sharedMesh = mesh;
             m_renderer = GetComponent<MeshRenderer>();
             cones.Add(this);
-            ForceDisable = !FairPlay.viewCones;
+            ForceDisable = !Instance.enabled;
         }
 
         public void SetColor(Color col) {

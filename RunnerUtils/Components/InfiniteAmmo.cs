@@ -4,29 +4,27 @@ using UnityEngine;
 
 namespace RunnerUtils.Components;
 
-public static class InfiniteAmmo
+public class InfiniteAmmo : ComponentBase<InfiniteAmmo>
 {
-    private static bool m_enabled;
+    public override string Identifier => "Ammo";
+    public override bool ShowOnFairPlay => true;
 
-    public static bool Enabled {
-        get { return m_enabled; }
+    public override void Enable() {
+        base.Enable();
+        ReloadSlots();
     }
 
-    public static void Enable() {
-        m_enabled = true;
-        GameManager.instance.player.GetHUD().GetAmmoIndicator()
-            .LoadInSlots(GameManager.instance.player.GetArmScript().GetEquippedWeapon());
+    public override void Disable() {
+        base.Disable();
+        ReloadSlots();
     }
 
-    public static void Disable() {
-        m_enabled = false;
-        GameManager.instance.player.GetHUD().GetAmmoIndicator()
-            .LoadInSlots(GameManager.instance.player.GetArmScript().GetEquippedWeapon());
-
+    public override void Toggle() {
+        base.Toggle();
+        ReloadSlots();
     }
 
-    public static void Toggle() {
-        m_enabled = !m_enabled;
+    static void ReloadSlots() {
         try {
             GameManager.instance.player.GetHUD().GetAmmoIndicator()
                 .LoadInSlots(GameManager.instance.player.GetArmScript().GetEquippedWeapon());
@@ -37,9 +35,9 @@ public static class InfiniteAmmo
     }
 
     private static void ColorAmmoSlots(List<HUDAmmoIndicatorSlot> slots, Color color) {
-        foreach (var t in slots) {
-            t.lowAmmoColor = color;
-            t.LowAmmo();
+        foreach (var slot in slots) {
+            slot.lowAmmoColor = color;
+            slot.LowAmmo();
         }
     }
 
@@ -48,13 +46,13 @@ public static class InfiniteAmmo
     {
         [HarmonyPostfix]
         public static void Postfix(ref List<HUDAmmoIndicatorSlot> ___spawnedSlots) {
-            for (int i = 0; i < ___spawnedSlots.Count; ++i) {
-                if (m_enabled) {
-                    ColorAmmoSlots(___spawnedSlots, Color.red);
-                }
-                else {
-                    ColorAmmoSlots(___spawnedSlots, Color.white);
-                    ___spawnedSlots[i].lowAmmoColor = Color.yellow;
+            if (Instance.enabled) {
+                ColorAmmoSlots(___spawnedSlots, Color.red);
+            }
+            else {
+                ColorAmmoSlots(___spawnedSlots, Color.white);
+                foreach (var slot in ___spawnedSlots) {
+                    slot.lowAmmoColor = Color.yellow;
                 }
             }
         }
@@ -65,7 +63,7 @@ public static class InfiniteAmmo
     {
         [HarmonyPrefix]
         public static bool Prefix(ref bool __result) {
-            if (m_enabled) {
+            if (Instance.enabled) {
                 __result = true;
                 return false;
             }

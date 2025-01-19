@@ -1,25 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
+using HarmonyLib;
 
 namespace RunnerUtils.Components;
 
-public static class PauseTime
+public class PauseTime : ComponentBase<PauseTime>
 {
+    public override string Identifier => "Timestop";
+    public override bool ShowOnFairPlay => true;
+    
     private static TimeScale m_timeScale;
-
-    public static bool Enabled { get; private set; } = false;
-
-    public static void Toggle() {
+    
+    public override void Toggle() {
+        base.Toggle();
         m_timeScale.SetScale(Mathf.Abs(m_timeScale.GetScale()-1f));
-        Enabled = !Enabled;
     }
 
-    public static void Reset() {
-        m_timeScale = GameManager.instance.timeManager.CreateTimeScale(1f);
-        Enabled = false;
+    public override void Enable() {
+        base.Enable();
+        m_timeScale.SetScale(0f);
+    }
+
+    public override void Disable() {
+        base.Disable();
+        m_timeScale.SetScale(1f);
+    }
+    
+    // TimeManager is most likely initialized once LevelController.Initialize is called
+    // So it's reasonable to init timescales here
+    [HarmonyPatch(typeof(LevelController))]
+    public class LevelControllerPatch
+    {
+        [HarmonyPatch("Initialize")]
+        [HarmonyPostfix]
+        public static void InitScale() {
+            m_timeScale = GameManager.instance.timeManager.CreateTimeScale(Instance.enabled?0:1);
+        }
     }
 }

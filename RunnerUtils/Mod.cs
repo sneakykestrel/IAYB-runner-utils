@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using BepInEx;
+﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
@@ -7,7 +6,6 @@ using RunnerUtils.Components;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Security.Permissions;
 
 namespace RunnerUtils;
 
@@ -22,9 +20,7 @@ public class Mod : BaseUnityPlugin
     private static RUInputManager InputManager { get; set; } = new();
     public static InGameLog Igl { get; private set; } = new InGameLog($"{pluginName}~Ingame Log (v{pluginVersion})");
     internal static new ManualLogSource Logger;
-
-    private static bool shouldResetScale;
-
+    
     public static ConfigEntry<float> throwCam_rangeScalar;
     public static ConfigEntry<bool> throwCam_unlockCamera;
     public static ConfigEntry<bool> throwCam_autoSwitch;
@@ -63,10 +59,6 @@ public class Mod : BaseUnityPlugin
 
     private void Update() {
         InputManager.Update();
-        if (GameManager.instance.timeManager is not null && shouldResetScale) {
-            PauseTime.Reset();
-            shouldResetScale = false;
-        }
         if (GameManager.instance.player is not null) {
             FairPlay.Update();
         }
@@ -74,7 +66,6 @@ public class Mod : BaseUnityPlugin
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
         if (mode == LoadSceneMode.Additive) ShowTriggers.ExtendRegistry();
-        shouldResetScale = true;
         ViewCones.OnSceneLoad();
     }
 
@@ -88,7 +79,8 @@ public class Mod : BaseUnityPlugin
             Igl.Setup();
             ThrowCam.Reset();
             FairPlay.Init();
-            MovementDebug.Init();
+            HardFallOverlay.Instance.SetupIndicator();
+            MovementDebug.Instance.Init();
         }
     }
 

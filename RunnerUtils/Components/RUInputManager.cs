@@ -2,12 +2,7 @@
 using Enemy;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace RunnerUtils.Components;
 
@@ -86,9 +81,8 @@ public class RUInputManager
             key: KeyCode.L,
             action: () => {
                 if (!GameManager.instance.player.GetHUD()) return;
-                InfiniteAmmo.Toggle();
+                InfiniteAmmo.Instance.Toggle();
                 Mod.Igl.LogLine($"Toggled infinite ammo");
-                FairPlay.infiniteAmmo = InfiniteAmmo.Enabled;
             }
         ),
         new(
@@ -107,27 +101,24 @@ public class RUInputManager
             identifier: "Toggle auto jump",
             key: KeyCode.M,
             action: () => {
-                AutoJump.Toggle();
+                AutoJump.Instance.Toggle();
                 Mod.Igl.LogLine($"Toggled auto jump");
-                FairPlay.autoJump = AutoJump.Enabled;
             }
         ),
         new(
             identifier: "Toggle hard fall overlay",
             key: KeyCode.U,
             action: () => {
-                MovementDebug.Toggle();
+                HardFallOverlay.Instance.Toggle();
                 Mod.Igl.LogLine($"Toggled hf overlay");
-                FairPlay.hfOverlay = !FairPlay.hfOverlay;
             }
         ),
         new(
             identifier: "Toggle timestop",
             key: KeyCode.RightShift,
             action: () => {
-                PauseTime.Toggle();
+                PauseTime.Instance.Toggle();
                 Mod.Igl.LogLine($"Toggled timestop");
-                FairPlay.timePaused = PauseTime.Enabled;
             }
         ),
         new(
@@ -136,7 +127,6 @@ public class RUInputManager
             action: () => {
                 LocationSave.SaveLocation();
                 Mod.Igl.LogLine($"Saved location {(Mod.saveLocation_verbose.Value ? LocationSave.StringLoc : "")}");
-                FairPlay.locationSaved = true;
             }
         ),
         new(
@@ -157,16 +147,14 @@ public class RUInputManager
             action: () => {
                 LocationSave.ClearLocation();
                 Mod.Igl.LogLine($"Cleared saved location");
-                FairPlay.locationSaved = false;
             }
         ),
         new(
             identifier: "Toggle view cones visibility",
             key: KeyCode.Y,
             action: () => {
-                ViewCones.Toggle();
+                ViewCones.Instance.Toggle();
                 Mod.Igl.LogLine($"Toggled view cones' visibility");
-                FairPlay.viewCones = !FairPlay.viewCones;
             }
         ),
 
@@ -207,7 +195,7 @@ public class RUInputManager
         new(
             identifier: "Toggle advanced movement info",
             action: () => {
-                MovementDebug.ToggleAdvanced();
+                MovementDebug.Instance.Toggle();
                 Mod.Igl.LogLine($"Toggled movement info");
             }
         ),

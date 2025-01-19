@@ -1,24 +1,18 @@
 ﻿using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RunnerUtils.Components;
 
-public static class AutoJump
+public class AutoJump : ComponentBase<AutoJump>
 {
-    public static bool Enabled { get; private set; } = false;
-
-    public static void Toggle() => Enabled = !Enabled;
-
+    public override string Identifier => "Auto Jump";
+    public override bool ShowOnFairPlay => true;
+    
     [HarmonyPatch(typeof(PlayerMovement), "UpdateJumpCheck")]
     public static class PatchAutoJump
     {
         [HarmonyPrefix]
         public static bool Prefix(ref PlayerMovement __instance) {
-            if (!Enabled) return true;
+            if (!Instance.enabled) return true;
             var perchDetachment = __instance.BlockPerchDetachment();
             if (__instance.CanJump() && !perchDetachment && GameManager.instance.inputManager.jump.Held()) {
                 __instance.Jump();
